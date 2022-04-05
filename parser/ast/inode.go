@@ -1,6 +1,7 @@
 package ast
 
 type INode interface {
-	String()
+	String() string
 	Children() []INode
+	codeBuilder() *CodeBuilder
 }
