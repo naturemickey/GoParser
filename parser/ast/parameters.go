@@ -2,6 +2,21 @@ package ast
 
 type Parameters struct {
 	BaseNode
+
+	parameterDecls []*ParameterDecl
+}
+
+func (s *Parameters) ParameterDecls() []*ParameterDecl {
+	return s.parameterDecls
+}
+
+func (s *Parameters) SetParameterDecls(parameterDecls []*ParameterDecl) {
+	s.parameterDecls = parameterDecls
+}
+
+func (s *Parameters) _Result_() {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (s *Parameters) _Receiver_() {
@@ -10,8 +25,15 @@ func (s *Parameters) _Receiver_() {
 }
 
 func (s *Parameters) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendString("(")
+	for _, decl := range s.parameterDecls {
+		cb.appendNode(decl).appendString(", ")
+	}
+	cb.deleteLast()
+
+	cb.appendString(")")
+	return cb
 }
 
 func (s *Parameters) Children() []INode {
@@ -24,3 +46,4 @@ func (s *Parameters) String() string {
 }
 
 var _ Receiver = (*Parameters)(nil)
+var _ Result = (*Parameters)(nil)

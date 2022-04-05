@@ -5,6 +5,11 @@ type VarDecl struct {
 	varSpecs []*VarSpec
 }
 
+func (s *VarDecl) _Statement_() {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s *VarDecl) VarSpecs() []*VarSpec {
 	return s.varSpecs
 }

@@ -2,11 +2,25 @@ package ast
 
 type SliceType struct {
 	BaseNode
+
+	elementType ElementType
+}
+
+func (s *SliceType) ElementType() ElementType {
+	return s.elementType
+}
+
+func (s *SliceType) SetElementType(elementType ElementType) {
+	s.elementType = elementType
+}
+
+func (s *SliceType) _TypeLit_() {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (s *SliceType) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("[]").appendNode(s.elementType)
 }
 
 func (s *SliceType) Children() []INode {
@@ -18,4 +32,4 @@ func (s *SliceType) String() string {
 	return s.codeBuilder().String()
 }
 
-var _ INode = (*SliceType)(nil)
+var _ TypeLit = (*SliceType)(nil)

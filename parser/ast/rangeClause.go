@@ -2,11 +2,21 @@ package ast
 
 type RangeClause struct {
 	BaseNode
+
+	expressionList *ExpressionList
+	identifierList *IdentifierList
+	expression     *Expression
 }
 
 func (s *RangeClause) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	if s.expressionList != nil {
+		cb.appendNode(s.expressionList).appendString(" = ")
+	} else {
+		cb.appendNode(s.identifierList).appendString(" := ")
+	}
+	cb.appendString("range ").appendNode(s.expression)
+	return cb
 }
 
 func (s *RangeClause) Children() []INode {

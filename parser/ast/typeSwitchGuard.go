@@ -2,11 +2,18 @@ package ast
 
 type TypeSwitchGuard struct {
 	BaseNode
+
+	id          string
+	primaryExpr *PrimaryExpr
 }
 
 func (s *TypeSwitchGuard) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	if s.id != "" {
+		cb.appendString(s.id).appendString(" := ")
+	}
+	cb.appendNode(s.primaryExpr).appendString(".(type)")
+	return cb
 }
 
 func (s *TypeSwitchGuard) Children() []INode {

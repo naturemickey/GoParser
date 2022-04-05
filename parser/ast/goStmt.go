@@ -2,6 +2,16 @@ package ast
 
 type GoStmt struct {
 	BaseNode
+
+	expression *Expression
+}
+
+func (s *GoStmt) Expression() *Expression {
+	return s.expression
+}
+
+func (s *GoStmt) SetExpression(expression *Expression) {
+	s.expression = expression
 }
 
 func (s *GoStmt) _Statement_() {
@@ -10,8 +20,7 @@ func (s *GoStmt) _Statement_() {
 }
 
 func (s *GoStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("go ").appendNode(s.expression)
 }
 
 func (s *GoStmt) Children() []INode {

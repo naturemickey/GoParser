@@ -2,11 +2,29 @@ package ast
 
 type LiteralValue struct {
 	BaseNode
+	elementList *ElementList
+}
+
+func (s *LiteralValue) _Element_() {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *LiteralValue) _Key_() {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *LiteralValue) ElementList() *ElementList {
+	return s.elementList
+}
+
+func (s *LiteralValue) SetElementList(elementList *ElementList) {
+	s.elementList = elementList
 }
 
 func (s *LiteralValue) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("{").appendNode(s.elementList).appendString("}")
 }
 
 func (s *LiteralValue) Children() []INode {
@@ -18,4 +36,5 @@ func (s *LiteralValue) String() string {
 	return s.codeBuilder().String()
 }
 
-var _ INode = (*LiteralValue)(nil)
+var _ Key = (*LiteralValue)(nil)
+var _ Element = (*LiteralValue)(nil)

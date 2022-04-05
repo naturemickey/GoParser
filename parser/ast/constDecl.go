@@ -5,6 +5,11 @@ type ConstDecl struct {
 	constSpec []*ConstSpec
 }
 
+func (s *ConstDecl) _Statement_() {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s *ConstDecl) ConstSpec() []*ConstSpec {
 	return s.constSpec
 }

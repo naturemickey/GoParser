@@ -2,11 +2,29 @@ package ast
 
 type Conversion struct {
 	BaseNode
+
+	nonNamedType *NonNamedType
+	expression   *Expression
+}
+
+func (s *Conversion) NonNamedType() *NonNamedType {
+	return s.nonNamedType
+}
+
+func (s *Conversion) SetNonNamedType(nonNamedType *NonNamedType) {
+	s.nonNamedType = nonNamedType
+}
+
+func (s *Conversion) Expression() *Expression {
+	return s.expression
+}
+
+func (s *Conversion) SetExpression(expression *Expression) {
+	s.expression = expression
 }
 
 func (s *Conversion) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendNode(s.nonNamedType).appendString("(").appendNode(s.expression).appendString(")")
 }
 
 func (s *Conversion) Children() []INode {

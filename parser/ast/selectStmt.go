@@ -2,6 +2,7 @@ package ast
 
 type SelectStmt struct {
 	BaseNode
+	commClauses []*CommClause
 }
 
 func (s *SelectStmt) _Statement_() {
@@ -10,8 +11,13 @@ func (s *SelectStmt) _Statement_() {
 }
 
 func (s *SelectStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendString("select {\n")
+	for _, clause := range s.commClauses {
+		cb.appendNode(clause).newLine()
+	}
+	cb.appendString("}")
+	return cb
 }
 
 func (s *SelectStmt) Children() []INode {

@@ -2,11 +2,18 @@ package ast
 
 type CommClause struct {
 	BaseNode
+
+	commCase      *CommCase
+	statementList *StatementList
 }
 
 func (s *CommClause) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendNode(s.commCase).appendString(": ")
+	if s.statementList != nil {
+		cb.appendNode(s.statementList)
+	}
+	return cb
 }
 
 func (s *CommClause) Children() []INode {

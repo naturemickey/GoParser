@@ -2,11 +2,20 @@ package ast
 
 type TypeAssertion struct {
 	BaseNode
+
+	type_ *Type_
+}
+
+func (s *TypeAssertion) Type_() *Type_ {
+	return s.type_
+}
+
+func (s *TypeAssertion) SetType_(type_ *Type_) {
+	s.type_ = type_
 }
 
 func (s *TypeAssertion) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString(".(").appendNode(s.type_).appendString(")")
 }
 
 func (s *TypeAssertion) Children() []INode {

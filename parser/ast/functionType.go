@@ -2,11 +2,25 @@ package ast
 
 type FunctionType struct {
 	BaseNode
+
+	signature *Signature
+}
+
+func (s *FunctionType) Signature() *Signature {
+	return s.signature
+}
+
+func (s *FunctionType) SetSignature(signature *Signature) {
+	s.signature = signature
+}
+
+func (s *FunctionType) _TypeLit_() {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (s *FunctionType) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("func ").appendNode(s.signature)
 }
 
 func (s *FunctionType) Children() []INode {
@@ -18,4 +32,4 @@ func (s *FunctionType) String() string {
 	return s.codeBuilder().String()
 }
 
-var _ INode = (*FunctionType)(nil)
+var _ TypeLit = (*FunctionType)(nil)

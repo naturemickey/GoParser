@@ -2,11 +2,12 @@ package ast
 
 type Eos struct {
 	BaseNode
+
+	literal string
 }
 
 func (s *Eos) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString(s.literal)
 }
 
 func (s *Eos) Children() []INode {

@@ -2,11 +2,30 @@ package ast
 
 type TypeList struct {
 	BaseNode
+
+	types []*Type_
+}
+
+func (s *TypeList) Types() []*Type_ {
+	return s.types
+}
+
+func (s *TypeList) SetTypes(types []*Type_) {
+	s.types = types
 }
 
 func (s *TypeList) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	for _, type_ := range s.types {
+		if type_ == nil {
+			cb.appendString("nil")
+		} else {
+			cb.appendNode(type_)
+		}
+		cb.appendString(", ")
+	}
+	cb.deleteLast()
+	return cb
 }
 
 func (s *TypeList) Children() []INode {

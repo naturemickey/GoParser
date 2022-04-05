@@ -2,11 +2,40 @@ package ast
 
 type Integer struct {
 	BaseNode
+
+	intType IntegerLitType
+	literal string
 }
 
+func (s *Integer) IntType() IntegerLitType {
+	return s.intType
+}
+
+func (s *Integer) SetIntType(intType IntegerLitType) {
+	s.intType = intType
+}
+
+func (s *Integer) Literal() string {
+	return s.literal
+}
+
+func (s *Integer) SetLiteral(literal string) {
+	s.literal = literal
+}
+
+type IntegerLitType int
+
+const (
+	DECIMAL_LIT = iota
+	BINARY_LIT
+	OCTAL_LIT
+	HEX_LIT
+	IMAGINARY_LIT
+	RUNE_LIT
+)
+
 func (s *Integer) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString(s.literal)
 }
 
 func (s *Integer) Children() []INode {

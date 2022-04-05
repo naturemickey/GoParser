@@ -2,11 +2,34 @@ package ast
 
 type EmbeddedField struct {
 	BaseNode
+
+	star     bool
+	typeName *TypeName
+}
+
+func (s *EmbeddedField) Star() bool {
+	return s.star
+}
+
+func (s *EmbeddedField) SetStar(star bool) {
+	s.star = star
+}
+
+func (s *EmbeddedField) TypeName() *TypeName {
+	return s.typeName
+}
+
+func (s *EmbeddedField) SetTypeName(typeName *TypeName) {
+	s.typeName = typeName
 }
 
 func (s *EmbeddedField) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	if s.star {
+		cb.appendString("*")
+	}
+	cb.appendNode(s.typeName)
+	return cb
 }
 
 func (s *EmbeddedField) Children() []INode {

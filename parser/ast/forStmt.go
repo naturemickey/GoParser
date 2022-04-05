@@ -2,6 +2,11 @@ package ast
 
 type ForStmt struct {
 	BaseNode
+
+	expression  *Expression
+	forClause   *ForClause
+	rangeClause *RangeClause
+	block       *Block
 }
 
 func (s *ForStmt) _Statement_() {
@@ -10,8 +15,13 @@ func (s *ForStmt) _Statement_() {
 }
 
 func (s *ForStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendString("for ")
+	cb.appendNode(s.expression)
+	cb.appendNode(s.forClause)
+	cb.appendNode(s.rangeClause)
+	cb.appendNode(s.block)
+	return cb
 }
 
 func (s *ForStmt) Children() []INode {

@@ -2,11 +2,20 @@ package ast
 
 type Index struct {
 	BaseNode
+
+	expression *Expression
+}
+
+func (s *Index) Expression() *Expression {
+	return s.expression
+}
+
+func (s *Index) SetExpression(expression *Expression) {
+	s.expression = expression
 }
 
 func (s *Index) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("[").appendNode(s.expression).appendString("]")
 }
 
 func (s *Index) Children() []INode {
