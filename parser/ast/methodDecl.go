@@ -2,6 +2,42 @@ package ast
 
 type MethodDecl struct {
 	BaseNode
+	receiver  Receiver
+	funName   string
+	signature *Signature
+	block     *Block
+}
+
+func (s *MethodDecl) Receiver() Receiver {
+	return s.receiver
+}
+
+func (s *MethodDecl) SetReceiver(receiver Receiver) {
+	s.receiver = receiver
+}
+
+func (s *MethodDecl) FunName() string {
+	return s.funName
+}
+
+func (s *MethodDecl) SetFunName(funName string) {
+	s.funName = funName
+}
+
+func (s *MethodDecl) Signature() *Signature {
+	return s.signature
+}
+
+func (s *MethodDecl) SetSignature(signature *Signature) {
+	s.signature = signature
+}
+
+func (s *MethodDecl) Block() *Block {
+	return s.block
+}
+
+func (s *MethodDecl) SetBlock(block *Block) {
+	s.block = block
 }
 
 func (s *MethodDecl) _IFunctionMethodDeclaration_() {
@@ -10,8 +46,12 @@ func (s *MethodDecl) _IFunctionMethodDeclaration_() {
 }
 
 func (s *MethodDecl) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendString("func ").appendNode(s.receiver).blank().appendString(s.funName).appendNode(s.signature)
+	if s.block != nil {
+		cb.appendNode(s.block)
+	}
+	return cb
 }
 
 func (s *MethodDecl) Children() []INode {

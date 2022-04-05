@@ -2,11 +2,12 @@ package ast
 
 type TypeSpec struct {
 	BaseNode
+	id    string
+	type_ *Type_
 }
 
 func (s *TypeSpec) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString(s.id).blank().appendNode(s.type_)
 }
 
 func (s *TypeSpec) Children() []INode {

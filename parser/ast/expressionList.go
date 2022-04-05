@@ -2,11 +2,24 @@ package ast
 
 type ExpressionList struct {
 	BaseNode
+	expressions []*Expression
+}
+
+func (s *ExpressionList) Expressions() []*Expression {
+	return s.expressions
+}
+
+func (s *ExpressionList) SetExpressions(expressions []*Expression) {
+	s.expressions = expressions
 }
 
 func (s *ExpressionList) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	for _, expression := range s.expressions {
+		cb.appendNode(expression).appendString(", ")
+	}
+	cb.deleteLast()
+	return cb
 }
 
 func (s *ExpressionList) Children() []INode {

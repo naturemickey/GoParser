@@ -2,11 +2,19 @@ package ast
 
 type ImportPath struct {
 	BaseNode
+	path string
+}
+
+func (s *ImportPath) Path() string {
+	return s.path
+}
+
+func (s *ImportPath) SetPath(path string) {
+	s.path = path
 }
 
 func (s *ImportPath) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString(s.path)
 }
 
 func (s *ImportPath) Children() []INode {
@@ -15,7 +23,7 @@ func (s *ImportPath) Children() []INode {
 }
 
 func (s *ImportPath) String() string {
-	return s.codeBuilder().String()
+	return s.path
 }
 
 var _ INode = (*ImportPath)(nil)

@@ -2,11 +2,23 @@ package ast
 
 type PackageClause struct {
 	BaseNode
+	packageName string
+}
+
+func NewPackageClause(packageName string) *PackageClause {
+	return &PackageClause{packageName: packageName}
+}
+
+func (s *PackageClause) PackageName() string {
+	return s.packageName
+}
+
+func (s *PackageClause) SetPackageName(packageName string) {
+	s.packageName = packageName
 }
 
 func (s *PackageClause) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("package ").appendString(s.packageName)
 }
 
 func (s *PackageClause) Children() []INode {

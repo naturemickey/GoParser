@@ -2,6 +2,33 @@ package ast
 
 type FunctionDecl struct {
 	BaseNode
+	funName   string
+	signature *Signature
+	block     *Block
+}
+
+func (s *FunctionDecl) FunName() string {
+	return s.funName
+}
+
+func (s *FunctionDecl) SetFunName(funName string) {
+	s.funName = funName
+}
+
+func (s *FunctionDecl) Signature() *Signature {
+	return s.signature
+}
+
+func (s *FunctionDecl) SetSignature(signature *Signature) {
+	s.signature = signature
+}
+
+func (s *FunctionDecl) Block() *Block {
+	return s.block
+}
+
+func (s *FunctionDecl) SetBlock(block *Block) {
+	s.block = block
 }
 
 func (s *FunctionDecl) _IFunctionMethodDeclaration_() {
@@ -10,8 +37,12 @@ func (s *FunctionDecl) _IFunctionMethodDeclaration_() {
 }
 
 func (s *FunctionDecl) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendString("func ").appendString(s.funName).appendNode(s.signature)
+	if s.block != nil {
+		cb.appendNode(s.block)
+	}
+	return cb
 }
 
 func (s *FunctionDecl) Children() []INode {

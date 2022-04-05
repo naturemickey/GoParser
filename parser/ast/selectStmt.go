@@ -4,6 +4,11 @@ type SelectStmt struct {
 	BaseNode
 }
 
+func (s *SelectStmt) _Statement_() {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (s *SelectStmt) codeBuilder() *CodeBuilder {
 	//TODO implement me
 	panic("implement me")
@@ -18,4 +23,4 @@ func (s *SelectStmt) String() string {
 	return s.codeBuilder().String()
 }
 
-var _ INode = (*SelectStmt)(nil)
+var _ Statement = (*SelectStmt)(nil)
