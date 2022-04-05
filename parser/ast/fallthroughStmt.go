@@ -10,8 +10,7 @@ func (s *FallThroughStmt) _Statement_() {
 }
 
 func (s *FallThroughStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("fallthrough")
 }
 
 func (s *FallThroughStmt) Children() []INode {

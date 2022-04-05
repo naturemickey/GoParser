@@ -2,6 +2,7 @@ package ast
 
 type GotoStmt struct {
 	BaseNode
+	label string
 }
 
 func (s *GotoStmt) _Statement_() {
@@ -10,8 +11,7 @@ func (s *GotoStmt) _Statement_() {
 }
 
 func (s *GotoStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("goto ").appendString(s.label)
 }
 
 func (s *GotoStmt) Children() []INode {

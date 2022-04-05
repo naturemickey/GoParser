@@ -2,6 +2,15 @@ package ast
 
 type DeferStmt struct {
 	BaseNode
+	expression *Expression
+}
+
+func (s *DeferStmt) Expression() *Expression {
+	return s.expression
+}
+
+func (s *DeferStmt) SetExpression(expression *Expression) {
+	s.expression = expression
 }
 
 func (s *DeferStmt) _Statement_() {
@@ -10,8 +19,7 @@ func (s *DeferStmt) _Statement_() {
 }
 
 func (s *DeferStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString("defer ").appendNode(s.expression)
 }
 
 func (s *DeferStmt) Children() []INode {

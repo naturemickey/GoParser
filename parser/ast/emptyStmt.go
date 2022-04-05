@@ -5,8 +5,7 @@ type EmptStmt struct {
 }
 
 func (s *EmptStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder()
 }
 
 func (s *EmptStmt) Children() []INode {

@@ -2,6 +2,8 @@ package ast
 
 type ShortValDecl struct {
 	BaseNode
+	identifierList *IdentifierList
+	expressionList *ExpressionList
 }
 
 func (s *ShortValDecl) _Statement_() {
@@ -15,8 +17,7 @@ func (s *ShortValDecl) _SimpleStmt_() {
 }
 
 func (s *ShortValDecl) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendNode(s.identifierList).appendString(" := ").appendNode(s.expressionList)
 }
 
 func (s *ShortValDecl) Children() []INode {

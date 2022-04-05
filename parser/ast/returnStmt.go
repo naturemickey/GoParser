@@ -2,6 +2,7 @@ package ast
 
 type ReturnStmt struct {
 	BaseNode
+	expressionList *ExpressionList
 }
 
 func (s *ReturnStmt) _Statement_() {
@@ -10,8 +11,12 @@ func (s *ReturnStmt) _Statement_() {
 }
 
 func (s *ReturnStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendString("return")
+	if s.expressionList != nil {
+		cb.blank().appendNode(s.expressionList)
+	}
+	return cb
 }
 
 func (s *ReturnStmt) Children() []INode {

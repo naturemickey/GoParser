@@ -2,6 +2,7 @@ package ast
 
 type ContinueStmt struct {
 	BaseNode
+	label string
 }
 
 func (s *ContinueStmt) _Statement_() {
@@ -10,8 +11,12 @@ func (s *ContinueStmt) _Statement_() {
 }
 
 func (s *ContinueStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendString("continue")
+	if s.label != "" {
+		cb.blank().appendString(s.label)
+	}
+	return cb
 }
 
 func (s *ContinueStmt) Children() []INode {

@@ -2,11 +2,19 @@ package ast
 
 type AssignOp struct {
 	BaseNode
+	assignPrefix string
+}
+
+func (s *AssignOp) AssignPrefix() string {
+	return s.assignPrefix
+}
+
+func (s *AssignOp) SetAssignPrefix(assignPrefix string) {
+	s.assignPrefix = assignPrefix
 }
 
 func (s *AssignOp) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendString(s.assignPrefix).appendString("=")
 }
 
 func (s *AssignOp) Children() []INode {

@@ -2,6 +2,7 @@ package ast
 
 type BreakStmt struct {
 	BaseNode
+	label string
 }
 
 func (s *BreakStmt) _Statement_() {
@@ -10,8 +11,12 @@ func (s *BreakStmt) _Statement_() {
 }
 
 func (s *BreakStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	cb.appendString("break")
+	if s.label != "" {
+		cb.blank().appendString(s.label)
+	}
+	return cb
 }
 
 func (s *BreakStmt) Children() []INode {

@@ -2,6 +2,24 @@ package ast
 
 type SendStmt struct {
 	BaseNode
+	channel    *Expression
+	expression *Expression
+}
+
+func (s *SendStmt) Channel() *Expression {
+	return s.channel
+}
+
+func (s *SendStmt) SetChannel(channel *Expression) {
+	s.channel = channel
+}
+
+func (s *SendStmt) Expression() *Expression {
+	return s.expression
+}
+
+func (s *SendStmt) SetExpression(expression *Expression) {
+	s.expression = expression
 }
 
 func (s *SendStmt) _Statement_() {
@@ -15,8 +33,7 @@ func (s *SendStmt) _SimpleStmt_() {
 }
 
 func (s *SendStmt) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	return NewCodeBuilder().appendNode(s.channel).appendString(" <- ").appendNode(s.expression)
 }
 
 func (s *SendStmt) Children() []INode {
