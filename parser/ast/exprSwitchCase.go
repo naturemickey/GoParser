@@ -2,11 +2,17 @@ package ast
 
 type ExprSwitchCase struct {
 	BaseNode
+	expressionList *ExpressionList
 }
 
 func (s *ExprSwitchCase) codeBuilder() *CodeBuilder {
-	//TODO implement me
-	panic("implement me")
+	cb := NewCodeBuilder()
+	if s.expressionList != nil {
+		cb.appendString("case ").appendNode(s.expressionList)
+	} else {
+		cb.appendString("default")
+	}
+	return cb
 }
 
 func (s *ExprSwitchCase) Children() []INode {
