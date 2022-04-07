@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	file, _ := ioutil.ReadFile("./test_examples/anonymousMethods.go")
+	file, err := ioutil.ReadFile("./test_examples/anonymousMethods_go")
+	if err != nil {
+		panic(err.Error())
+	}
 	input := antlr.NewInputStream(string(file))
 	lexer := antlr4.NewGoLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
