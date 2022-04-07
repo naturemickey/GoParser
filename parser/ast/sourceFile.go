@@ -2,20 +2,42 @@ package ast
 
 type SourceFile struct {
 	BaseNode
-	packageClause                 *PackageClause
-	importDecl                    []*ImportDecl
-	functionOrMethodOrDeclaration []IFunctionMethodDeclaration
+	packageClause                  *PackageClause
+	importDecls                    []*ImportDecl
+	functionOrMethodOrDeclarations []IFunctionMethodDeclaration
 	//functionDecl  *FunctionDecl
 	//methodDecl    *MethodDecl
 	//declaration   *Declaration
 }
 
-func (s *SourceFile) FunctionOrMethodOrDeclaration() []IFunctionMethodDeclaration {
-	return s.functionOrMethodOrDeclaration
+func NewSourceFile(packageClause *PackageClause, importDecls []*ImportDecl, functionOrMethodOrDeclarations []IFunctionMethodDeclaration) *SourceFile {
+	return &SourceFile{packageClause: packageClause, importDecls: importDecls, functionOrMethodOrDeclarations: functionOrMethodOrDeclarations}
 }
 
-func (s *SourceFile) SetFunctionOrMethodOrDeclaration(functionOrMethodOrDeclaration []IFunctionMethodDeclaration) {
-	s.functionOrMethodOrDeclaration = functionOrMethodOrDeclaration
+func (s *SourceFile) addFunctionDecl(d *FunctionDecl) {
+	s.functionOrMethodOrDeclarations = append(s.functionOrMethodOrDeclarations, d)
+}
+func (s *SourceFile) addMethodDecl(d *MethodDecl) {
+	s.functionOrMethodOrDeclarations = append(s.functionOrMethodOrDeclarations, d)
+}
+func (s *SourceFile) addDeclaration(d Declaration) {
+	s.functionOrMethodOrDeclarations = append(s.functionOrMethodOrDeclarations, d)
+}
+
+func (s *SourceFile) ImportDecls() []*ImportDecl {
+	return s.importDecls
+}
+
+func (s *SourceFile) SetImportDecls(importDecls []*ImportDecl) {
+	s.importDecls = importDecls
+}
+
+func (s *SourceFile) FunctionOrMethodOrDeclarations() []IFunctionMethodDeclaration {
+	return s.functionOrMethodOrDeclarations
+}
+
+func (s *SourceFile) SetFunctionOrMethodOrDeclarations(functionOrMethodOrDeclarations []IFunctionMethodDeclaration) {
+	s.functionOrMethodOrDeclarations = functionOrMethodOrDeclarations
 }
 
 func (s *SourceFile) PackageClause() *PackageClause {
@@ -24,14 +46,6 @@ func (s *SourceFile) PackageClause() *PackageClause {
 
 func (s *SourceFile) SetPackageClause(packageClause *PackageClause) {
 	s.packageClause = packageClause
-}
-
-func (s *SourceFile) ImportDecl() []*ImportDecl {
-	return s.importDecl
-}
-
-func (s *SourceFile) SetImportDecl(importDecl []*ImportDecl) {
-	s.importDecl = importDecl
 }
 
 func (s *SourceFile) Children() []INode {
@@ -44,11 +58,11 @@ func (s *SourceFile) codeBuilder() *CodeBuilder {
 
 	cb.appendNode(s.packageClause)
 
-	for _, decl := range s.importDecl {
+	for _, decl := range s.importDecls {
 		cb.appendNode(decl).newLine()
 	}
 
-	for _, fmd := range s.functionOrMethodOrDeclaration {
+	for _, fmd := range s.functionOrMethodOrDeclarations {
 		cb.appendNode(fmd).newLine()
 	}
 

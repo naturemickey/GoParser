@@ -2,24 +2,28 @@ package ast
 
 type ImportDecl struct {
 	BaseNode
-	importSpec []*ImportSpec
+	importSpecs []*ImportSpec
 }
 
-func (s *ImportDecl) ImportSpec() []*ImportSpec {
-	return s.importSpec
+func NewImportDecl(importSpecs []*ImportSpec) *ImportDecl {
+	return &ImportDecl{importSpecs: importSpecs}
 }
 
-func (s *ImportDecl) SetImportSpec(importSpec []*ImportSpec) {
-	s.importSpec = importSpec
+func (s *ImportDecl) ImportSpecs() []*ImportSpec {
+	return s.importSpecs
+}
+
+func (s *ImportDecl) SetImportSpecs(importSpecs []*ImportSpec) {
+	s.importSpecs = importSpecs
 }
 
 func (s *ImportDecl) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder().appendString("import ")
-	if len(s.importSpec) == 1 {
-		cb.appendNode(s.importSpec[0])
+	if len(s.importSpecs) == 1 {
+		cb.appendNode(s.importSpecs[0])
 	} else {
 		cb.appendString("(").newLine()
-		for _, spec := range s.importSpec {
+		for _, spec := range s.importSpecs {
 			cb.tab().appendNode(spec).newLine()
 		}
 		cb.appendString(")")

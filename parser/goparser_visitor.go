@@ -2,6 +2,7 @@ package parser
 
 import (
 	"GoParser/parser/antlr4"
+	"GoParser/parser/ast"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 )
 
@@ -23,15 +24,36 @@ func (visitor *GoParserVisitorImpl) VisitErrorNode(node antlr.ErrorNode) interfa
 }
 
 func (visitor *GoParserVisitorImpl) VisitSourceFile(ctx *antlr4.SourceFileContext) interface{} {
-	panic("implement me")
+	packageClause := ctx.PackageClause().Accept(visitor).(*ast.PackageClause)
+	importDecls := []*ast.ImportDecl{}
+	for _, decl := range ctx.AllImportDecl() {
+		importDecls = append(importDecls, decl.Accept(visitor).(*ast.ImportDecl))
+	}
+	functionOrMethodOrDeclarations := []ast.IFunctionMethodDeclaration{}
+	for _, tree := range ctx.GetChildren() {
+		switch child := tree.(type) {
+		case *antlr4.FunctionDeclContext:
+			functionOrMethodOrDeclarations = append(functionOrMethodOrDeclarations, child.Accept(visitor).(*ast.FunctionDecl))
+		case *antlr4.MethodDeclContext:
+			functionOrMethodOrDeclarations = append(functionOrMethodOrDeclarations, child.Accept(visitor).(*ast.MethodDecl))
+		case *antlr4.DeclarationContext:
+			functionOrMethodOrDeclarations = append(functionOrMethodOrDeclarations, child.Accept(visitor).(ast.Declaration))
+		}
+	}
+	return ast.NewSourceFile(packageClause, importDecls, functionOrMethodOrDeclarations)
 }
 
 func (visitor *GoParserVisitorImpl) VisitPackageClause(ctx *antlr4.PackageClauseContext) interface{} {
-	panic("implement me")
+	packageName := ctx.GetPackageName().GetText()
+	return ast.NewPackageClause(packageName)
 }
 
 func (visitor *GoParserVisitorImpl) VisitImportDecl(ctx *antlr4.ImportDeclContext) interface{} {
-	panic("implement me")
+	importSpecs := []*ast.ImportSpec{}
+	for _, spec := range ctx.AllImportSpec() {
+		importSpecs = append(importSpecs, spec.Accept(visitor).(*ast.ImportSpec))
+	}
+	return ast.NewImportDecl(importSpecs)
 }
 
 func (visitor *GoParserVisitorImpl) VisitImportSpec(ctx *antlr4.ImportSpecContext) interface{} {

@@ -6,6 +6,10 @@ type ImportSpec struct {
 	importPath *ImportPath
 }
 
+func NewImportSpec(alias string, importPath *ImportPath) *ImportSpec {
+	return &ImportSpec{alias: alias, importPath: importPath}
+}
+
 func (s *ImportSpec) Alias() string {
 	return s.alias
 }
