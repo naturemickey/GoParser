@@ -8,6 +8,34 @@ type Type_ struct {
 	type_    *Type_
 }
 
+func NewType_(typeName *TypeName, typeLit TypeLit, type_ *Type_) *Type_ {
+	return &Type_{typeName: typeName, typeLit: typeLit, type_: type_}
+}
+
+func (s *Type_) TypeName() *TypeName {
+	return s.typeName
+}
+
+func (s *Type_) SetTypeName(typeName *TypeName) {
+	s.typeName = typeName
+}
+
+func (s *Type_) TypeLit() TypeLit {
+	return s.typeLit
+}
+
+func (s *Type_) SetTypeLit(typeLit TypeLit) {
+	s.typeLit = typeLit
+}
+
+func (s *Type_) Type_() *Type_ {
+	return s.type_
+}
+
+func (s *Type_) SetType_(type_ *Type_) {
+	s.type_ = type_
+}
+
 func (s *Type_) _ReceiverType_() {
 	//TODO implement me
 	panic("implement me")

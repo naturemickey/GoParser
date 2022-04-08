@@ -8,6 +8,34 @@ type RangeClause struct {
 	expression     *Expression
 }
 
+func NewRangeClause(expressionList *ExpressionList, identifierList *IdentifierList, expression *Expression) *RangeClause {
+	return &RangeClause{expressionList: expressionList, identifierList: identifierList, expression: expression}
+}
+
+func (s *RangeClause) ExpressionList() *ExpressionList {
+	return s.expressionList
+}
+
+func (s *RangeClause) SetExpressionList(expressionList *ExpressionList) {
+	s.expressionList = expressionList
+}
+
+func (s *RangeClause) IdentifierList() *IdentifierList {
+	return s.identifierList
+}
+
+func (s *RangeClause) SetIdentifierList(identifierList *IdentifierList) {
+	s.identifierList = identifierList
+}
+
+func (s *RangeClause) Expression() *Expression {
+	return s.expression
+}
+
+func (s *RangeClause) SetExpression(expression *Expression) {
+	s.expression = expression
+}
+
 func (s *RangeClause) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	if s.expressionList != nil {

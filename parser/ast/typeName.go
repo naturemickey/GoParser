@@ -6,6 +6,26 @@ type TypeName struct {
 	id             string
 }
 
+func NewTypeName(qualifiedIdent *QualifiedIdent, id string) *TypeName {
+	return &TypeName{qualifiedIdent: qualifiedIdent, id: id}
+}
+
+func (s *TypeName) QualifiedIdent() *QualifiedIdent {
+	return s.qualifiedIdent
+}
+
+func (s *TypeName) SetQualifiedIdent(qualifiedIdent *QualifiedIdent) {
+	s.qualifiedIdent = qualifiedIdent
+}
+
+func (s *TypeName) Id() string {
+	return s.id
+}
+
+func (s *TypeName) SetId(id string) {
+	s.id = id
+}
+
 func (s *TypeName) _IMethodSpecOrTypeName_() {
 	//TODO implement me
 	panic("implement me")

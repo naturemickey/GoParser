@@ -526,39 +526,106 @@ func (visitor *GoParserVisitorImpl) VisitForStmt(ctx *antlr4.ForStmtContext) int
 }
 
 func (visitor *GoParserVisitorImpl) VisitForClause(ctx *antlr4.ForClauseContext) interface{} {
-	panic("implement me")
+	var initStmt ast.SimpleStmt
+	var expression *ast.Expression
+	var postStmt ast.SimpleStmt
+
+	if ctx.GetInitStmt() != nil {
+		initStmt = ctx.GetInitStmt().Accept(visitor).(ast.SimpleStmt)
+	}
+	if ctx.Expression() != nil {
+		expression = ctx.Expression().Accept(visitor).(*ast.Expression)
+	}
+	if ctx.GetPostStmt() != nil {
+		postStmt = ctx.GetPostStmt().Accept(visitor).(ast.SimpleStmt)
+	}
+	return ast.NewForClause(initStmt, expression, postStmt)
 }
 
 func (visitor *GoParserVisitorImpl) VisitRangeClause(ctx *antlr4.RangeClauseContext) interface{} {
-	panic("implement me")
+	var expressionList *ast.ExpressionList
+	var identifierList *ast.IdentifierList
+	var expression *ast.Expression = ctx.Expression().Accept(visitor).(*ast.Expression)
+
+	if ctx.ExpressionList() != nil {
+		expressionList = ctx.ExpressionList().Accept(visitor).(*ast.ExpressionList)
+	}
+	if ctx.IdentifierList() != nil {
+		identifierList = ctx.IdentifierList().Accept(visitor).(*ast.IdentifierList)
+	}
+	return ast.NewRangeClause(expressionList, identifierList, expression)
 }
 
 func (visitor *GoParserVisitorImpl) VisitGoStmt(ctx *antlr4.GoStmtContext) interface{} {
-	panic("implement me")
+	expression := ctx.Expression().Accept(visitor).(*ast.Expression)
+	return ast.NewGoStmt(expression)
 }
 
 func (visitor *GoParserVisitorImpl) VisitType_(ctx *antlr4.Type_Context) interface{} {
-	panic("implement me")
+	var typeName *ast.TypeName
+	var typeLit ast.TypeLit
+	var type_ *ast.Type_
+	if ctx.TypeName() != nil {
+		typeName = ctx.TypeName().Accept(visitor).(*ast.TypeName)
+	}
+	if ctx.TypeLit() != nil {
+		typeLit = ctx.TypeLit().Accept(visitor).(ast.TypeLit)
+	}
+	if ctx.Type_() != nil {
+		type_ = ctx.Type_().Accept(visitor).(*ast.Type_)
+	}
+	return ast.NewType_(typeName, typeLit, type_)
 }
 
 func (visitor *GoParserVisitorImpl) VisitTypeName(ctx *antlr4.TypeNameContext) interface{} {
-	panic("implement me")
+	var qualifiedIdent *ast.QualifiedIdent
+	var id string
+	if ctx.QualifiedIdent() != nil {
+		qualifiedIdent = ctx.QualifiedIdent().Accept(visitor).(*ast.QualifiedIdent)
+	}
+	if ctx.IDENTIFIER() != nil {
+		id = ctx.IDENTIFIER().GetText()
+	}
+	return ast.NewTypeName(qualifiedIdent, id)
 }
 
 func (visitor *GoParserVisitorImpl) VisitTypeLit(ctx *antlr4.TypeLitContext) interface{} {
-	panic("implement me")
+	if ctx.ArrayType() != nil {
+		return ctx.ArrayType().Accept(visitor)
+	}
+	if ctx.StructType() != nil {
+		return ctx.StructType().Accept(visitor)
+	}
+	if ctx.PointerType() != nil {
+		return ctx.PointerType().Accept(visitor)
+	}
+	if ctx.FunctionType() != nil {
+		return ctx.FunctionType().Accept(visitor)
+	}
+	if ctx.InterfaceType() != nil {
+		return ctx.InterfaceType().Accept(visitor)
+	}
+	if ctx.SliceType() != nil {
+		return ctx.SliceType().Accept(visitor)
+	}
+	if ctx.MapType() != nil {
+		return ctx.MapType().Accept(visitor)
+	}
+	return ctx.ChannelType().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitArrayType(ctx *antlr4.ArrayTypeContext) interface{} {
-	panic("implement me")
+	var arrayLength ast.ArrayLength = ctx.ArrayLength().Accept(visitor).(ast.ArrayLength)
+	var elementType ast.ElementType = ctx.ElementType().Accept(visitor).(ast.ElementType)
+	return ast.NewArrayType(arrayLength, elementType)
 }
 
 func (visitor *GoParserVisitorImpl) VisitArrayLength(ctx *antlr4.ArrayLengthContext) interface{} {
-	panic("implement me")
+	return ctx.Expression().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitElementType(ctx *antlr4.ElementTypeContext) interface{} {
-	panic("implement me")
+	return ctx.Type_().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitPointerType(ctx *antlr4.PointerTypeContext) interface{} {

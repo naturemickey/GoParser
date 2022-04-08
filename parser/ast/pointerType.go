@@ -6,6 +6,10 @@ type PointerType struct {
 	type_ *Type_
 }
 
+func NewPointerType(type_ *Type_) *PointerType {
+	return &PointerType{type_: type_}
+}
+
 func (s *PointerType) Type_() *Type_ {
 	return s.type_
 }

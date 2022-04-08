@@ -6,6 +6,10 @@ type GoStmt struct {
 	expression *Expression
 }
 
+func NewGoStmt(expression *Expression) *GoStmt {
+	return &GoStmt{expression: expression}
+}
+
 func (s *GoStmt) Expression() *Expression {
 	return s.expression
 }

@@ -7,6 +7,10 @@ type ArrayType struct {
 	elementType ElementType
 }
 
+func NewArrayType(arrayLength ArrayLength, elementType ElementType) *ArrayType {
+	return &ArrayType{arrayLength: arrayLength, elementType: elementType}
+}
+
 func (s *ArrayType) ArrayLength() ArrayLength {
 	return s.arrayLength
 }
