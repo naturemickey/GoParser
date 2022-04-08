@@ -5,6 +5,18 @@ type TypeDecl struct {
 	typeSpecs []*TypeSpec
 }
 
+func NewTypeDecl(typeSpecs []*TypeSpec) *TypeDecl {
+	return &TypeDecl{typeSpecs: typeSpecs}
+}
+
+func (s *TypeDecl) TypeSpecs() []*TypeSpec {
+	return s.typeSpecs
+}
+
+func (s *TypeDecl) SetTypeSpecs(typeSpecs []*TypeSpec) {
+	s.typeSpecs = typeSpecs
+}
+
 func (s *TypeDecl) _Statement_() {
 	//TODO implement me
 	panic("implement me")

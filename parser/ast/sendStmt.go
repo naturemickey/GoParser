@@ -6,6 +6,10 @@ type SendStmt struct {
 	expression *Expression
 }
 
+func NewSendStmt(channel *Expression, expression *Expression) *SendStmt {
+	return &SendStmt{channel: channel, expression: expression}
+}
+
 func (s *SendStmt) Channel() *Expression {
 	return s.channel
 }

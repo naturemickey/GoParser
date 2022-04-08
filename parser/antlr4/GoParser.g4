@@ -113,7 +113,7 @@ incDecStmt: expression (PLUS_PLUS | MINUS_MINUS);
 
 assignment: expressionList assign_op expressionList;
 
-assign_op: (
+assign_op: prefix=(
 		PLUS
 		| MINUS
 		| OR

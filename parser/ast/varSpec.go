@@ -7,6 +7,10 @@ type VarSpec struct {
 	expressionList *ExpressionList
 }
 
+func NewVarSpec(identifierList *IdentifierList, type_ *Type_, expressionList *ExpressionList) *VarSpec {
+	return &VarSpec{identifierList: identifierList, type_: type_, expressionList: expressionList}
+}
+
 func (s *VarSpec) IdentifierList() *IdentifierList {
 	return s.identifierList
 }

@@ -6,6 +6,10 @@ type IncDecStmt struct {
 	isPlus     bool
 }
 
+func NewIncDecStmt(expression *Expression, isPlus bool) *IncDecStmt {
+	return &IncDecStmt{expression: expression, isPlus: isPlus}
+}
+
 func (s *IncDecStmt) IsPlus() bool {
 	return s.isPlus
 }

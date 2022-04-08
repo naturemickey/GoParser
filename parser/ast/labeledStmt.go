@@ -6,6 +6,10 @@ type LabeledStmt struct {
 	statement Statement
 }
 
+func NewLabeledStmt(label string, statement Statement) *LabeledStmt {
+	return &LabeledStmt{label: label, statement: statement}
+}
+
 func (s *LabeledStmt) Label() string {
 	return s.label
 }

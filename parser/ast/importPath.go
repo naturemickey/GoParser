@@ -5,6 +5,10 @@ type ImportPath struct {
 	path string
 }
 
+func NewImportPath(path string) *ImportPath {
+	return &ImportPath{path: path}
+}
+
 func (s *ImportPath) Path() string {
 	return s.path
 }

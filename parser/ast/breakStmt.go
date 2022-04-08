@@ -5,6 +5,18 @@ type BreakStmt struct {
 	label string
 }
 
+func NewBreakStmt(label string) *BreakStmt {
+	return &BreakStmt{label: label}
+}
+
+func (s *BreakStmt) Label() string {
+	return s.label
+}
+
+func (s *BreakStmt) SetLabel(label string) {
+	s.label = label
+}
+
 func (s *BreakStmt) _Statement_() {
 	//TODO implement me
 	panic("implement me")

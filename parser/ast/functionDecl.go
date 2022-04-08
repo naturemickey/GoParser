@@ -7,6 +7,10 @@ type FunctionDecl struct {
 	block     *Block
 }
 
+func NewFunctionDecl(funName string, signature *Signature, block *Block) *FunctionDecl {
+	return &FunctionDecl{funName: funName, signature: signature, block: block}
+}
+
 func (s *FunctionDecl) FunName() string {
 	return s.funName
 }

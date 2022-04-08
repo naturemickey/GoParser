@@ -4,6 +4,10 @@ type EmptStmt struct {
 	BaseNode
 }
 
+func NewEmptStmt() *EmptStmt {
+	return &EmptStmt{}
+}
+
 func (s *EmptStmt) codeBuilder() *CodeBuilder {
 	return NewCodeBuilder()
 }

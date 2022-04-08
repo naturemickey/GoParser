@@ -6,6 +6,26 @@ type ExprCaseClause struct {
 	statementList  *StatementList
 }
 
+func NewExprCaseClause(exprSwitchCase *ExprSwitchCase, statementList *StatementList) *ExprCaseClause {
+	return &ExprCaseClause{exprSwitchCase: exprSwitchCase, statementList: statementList}
+}
+
+func (s *ExprCaseClause) ExprSwitchCase() *ExprSwitchCase {
+	return s.exprSwitchCase
+}
+
+func (s *ExprCaseClause) SetExprSwitchCase(exprSwitchCase *ExprSwitchCase) {
+	s.exprSwitchCase = exprSwitchCase
+}
+
+func (s *ExprCaseClause) StatementList() *StatementList {
+	return s.statementList
+}
+
+func (s *ExprCaseClause) SetStatementList(statementList *StatementList) {
+	s.statementList = statementList
+}
+
 func (s *ExprCaseClause) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	cb.appendNode(s.exprSwitchCase).appendString(":\n")

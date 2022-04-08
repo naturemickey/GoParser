@@ -7,6 +7,10 @@ type Assignment struct {
 	expressionListRight *ExpressionList
 }
 
+func NewAssignment(expressionListLeft *ExpressionList, assignOp *AssignOp, expressionListRight *ExpressionList) *Assignment {
+	return &Assignment{expressionListLeft: expressionListLeft, assignOp: assignOp, expressionListRight: expressionListRight}
+}
+
 func (s *Assignment) ExpressionListLeft() *ExpressionList {
 	return s.expressionListLeft
 }

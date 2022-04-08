@@ -6,6 +6,26 @@ type ShortValDecl struct {
 	expressionList *ExpressionList
 }
 
+func NewShortValDecl(identifierList *IdentifierList, expressionList *ExpressionList) *ShortValDecl {
+	return &ShortValDecl{identifierList: identifierList, expressionList: expressionList}
+}
+
+func (s *ShortValDecl) IdentifierList() *IdentifierList {
+	return s.identifierList
+}
+
+func (s *ShortValDecl) SetIdentifierList(identifierList *IdentifierList) {
+	s.identifierList = identifierList
+}
+
+func (s *ShortValDecl) ExpressionList() *ExpressionList {
+	return s.expressionList
+}
+
+func (s *ShortValDecl) SetExpressionList(expressionList *ExpressionList) {
+	s.expressionList = expressionList
+}
+
 func (s *ShortValDecl) _Statement_() {
 	//TODO implement me
 	panic("implement me")

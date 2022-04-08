@@ -5,6 +5,18 @@ type GotoStmt struct {
 	label string
 }
 
+func NewGotoStmt(label string) *GotoStmt {
+	return &GotoStmt{label: label}
+}
+
+func (s *GotoStmt) Label() string {
+	return s.label
+}
+
+func (s *GotoStmt) SetLabel(label string) {
+	s.label = label
+}
+
 func (s *GotoStmt) _Statement_() {
 	//TODO implement me
 	panic("implement me")

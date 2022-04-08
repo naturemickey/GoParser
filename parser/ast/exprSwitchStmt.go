@@ -7,6 +7,10 @@ type ExprSwitchStmt struct {
 	exprCaseClauses []*ExprCaseClause
 }
 
+func NewExprSwitchStmt(expression *Expression, simpleStmt SimpleStmt, exprCaseClauses []*ExprCaseClause) *ExprSwitchStmt {
+	return &ExprSwitchStmt{expression: expression, simpleStmt: simpleStmt, exprCaseClauses: exprCaseClauses}
+}
+
 func (s *ExprSwitchStmt) ExprCaseClauses() []*ExprCaseClause {
 	return s.exprCaseClauses
 }

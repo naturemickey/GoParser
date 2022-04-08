@@ -5,6 +5,10 @@ type DeferStmt struct {
 	expression *Expression
 }
 
+func NewDeferStmt(expression *Expression) *DeferStmt {
+	return &DeferStmt{expression: expression}
+}
+
 func (s *DeferStmt) Expression() *Expression {
 	return s.expression
 }

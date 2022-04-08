@@ -5,6 +5,10 @@ type AssignOp struct {
 	assignPrefix string
 }
 
+func NewAssignOp(assignPrefix string) *AssignOp {
+	return &AssignOp{assignPrefix: assignPrefix}
+}
+
 func (s *AssignOp) AssignPrefix() string {
 	return s.assignPrefix
 }

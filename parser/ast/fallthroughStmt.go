@@ -4,6 +4,10 @@ type FallThroughStmt struct {
 	BaseNode
 }
 
+func NewFallThroughStmt() *FallThroughStmt {
+	return &FallThroughStmt{}
+}
+
 func (s *FallThroughStmt) _Statement_() {
 	//TODO implement me
 	panic("implement me")

@@ -2,20 +2,24 @@ package ast
 
 type ConstDecl struct {
 	BaseNode
-	constSpec []*ConstSpec
+	constSpecs []*ConstSpec
+}
+
+func (s *ConstDecl) ConstSpecs() []*ConstSpec {
+	return s.constSpecs
+}
+
+func (s *ConstDecl) SetConstSpecs(constSpecs []*ConstSpec) {
+	s.constSpecs = constSpecs
+}
+
+func NewConstDecl(constSpecs []*ConstSpec) *ConstDecl {
+	return &ConstDecl{constSpecs: constSpecs}
 }
 
 func (s *ConstDecl) _Statement_() {
 	//TODO implement me
 	panic("implement me")
-}
-
-func (s *ConstDecl) ConstSpec() []*ConstSpec {
-	return s.constSpec
-}
-
-func (s *ConstDecl) SetConstSpec(constSpec []*ConstSpec) {
-	s.constSpec = constSpec
 }
 
 func (s *ConstDecl) _IFunctionMethodDeclaration_() {
@@ -31,11 +35,11 @@ func (s *ConstDecl) _Declaration_() {
 func (s *ConstDecl) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	cb.appendString("const ")
-	if len(s.constSpec) == 1 {
-		cb.appendNode(s.constSpec[0])
+	if len(s.constSpecs) == 1 {
+		cb.appendNode(s.constSpecs[0])
 	} else {
 		cb.appendString("(").newLine()
-		for _, spec := range s.constSpec {
+		for _, spec := range s.constSpecs {
 			cb.tab().appendNode(spec).newLine()
 		}
 		cb.appendString(")")

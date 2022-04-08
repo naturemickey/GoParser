@@ -5,6 +5,10 @@ type StatementList struct {
 	statements []Statement
 }
 
+func NewStatementList(statements []Statement) *StatementList {
+	return &StatementList{statements: statements}
+}
+
 func (s *StatementList) Statements() []Statement {
 	return s.statements
 }

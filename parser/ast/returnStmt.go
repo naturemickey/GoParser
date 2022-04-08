@@ -5,6 +5,18 @@ type ReturnStmt struct {
 	expressionList *ExpressionList
 }
 
+func NewReturnStmt(expressionList *ExpressionList) *ReturnStmt {
+	return &ReturnStmt{expressionList: expressionList}
+}
+
+func (s *ReturnStmt) ExpressionList() *ExpressionList {
+	return s.expressionList
+}
+
+func (s *ReturnStmt) SetExpressionList(expressionList *ExpressionList) {
+	s.expressionList = expressionList
+}
+
 func (s *ReturnStmt) _Statement_() {
 	//TODO implement me
 	panic("implement me")

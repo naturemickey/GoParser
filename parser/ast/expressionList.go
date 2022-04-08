@@ -5,6 +5,10 @@ type ExpressionList struct {
 	expressions []*Expression
 }
 
+func NewExpressionList(expressions []*Expression) *ExpressionList {
+	return &ExpressionList{expressions: expressions}
+}
+
 func (s *ExpressionList) Expressions() []*Expression {
 	return s.expressions
 }

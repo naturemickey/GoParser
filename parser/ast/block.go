@@ -5,6 +5,10 @@ type Block struct {
 	statementList *StatementList
 }
 
+func NewBlock(statementList *StatementList) *Block {
+	return &Block{statementList: statementList}
+}
+
 func (s *Block) _Statement_() {
 	//TODO implement me
 	panic("implement me")

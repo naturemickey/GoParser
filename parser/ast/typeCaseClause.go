@@ -7,6 +7,26 @@ type TypeCaseClause struct {
 	statementList  *StatementList
 }
 
+func NewTypeCaseClause(typeSwitchCase *TypeSwitchCase, statementList *StatementList) *TypeCaseClause {
+	return &TypeCaseClause{typeSwitchCase: typeSwitchCase, statementList: statementList}
+}
+
+func (s *TypeCaseClause) TypeSwitchCase() *TypeSwitchCase {
+	return s.typeSwitchCase
+}
+
+func (s *TypeCaseClause) SetTypeSwitchCase(typeSwitchCase *TypeSwitchCase) {
+	s.typeSwitchCase = typeSwitchCase
+}
+
+func (s *TypeCaseClause) StatementList() *StatementList {
+	return s.statementList
+}
+
+func (s *TypeCaseClause) SetStatementList(statementList *StatementList) {
+	s.statementList = statementList
+}
+
 func (s *TypeCaseClause) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	cb.appendNode(s.typeSwitchCase).appendString(": ")

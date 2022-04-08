@@ -5,6 +5,10 @@ type IdentifierList struct {
 	identifiers []string
 }
 
+func NewIdentifierList(identifiers []string) *IdentifierList {
+	return &IdentifierList{identifiers: identifiers}
+}
+
 func (s *IdentifierList) Identifiers() []string {
 	return s.identifiers
 }

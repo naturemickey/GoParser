@@ -6,6 +6,10 @@ type TypeSwitchCase struct {
 	typeList *TypeList
 }
 
+func NewTypeSwitchCase(typeList *TypeList) *TypeSwitchCase {
+	return &TypeSwitchCase{typeList: typeList}
+}
+
 func (s *TypeSwitchCase) TypeList() *TypeList {
 	return s.typeList
 }

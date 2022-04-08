@@ -6,6 +6,10 @@ type TypeList struct {
 	types []*Type_
 }
 
+func NewTypeList(types []*Type_) *TypeList {
+	return &TypeList{types: types}
+}
+
 func (s *TypeList) Types() []*Type_ {
 	return s.types
 }

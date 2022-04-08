@@ -9,6 +9,10 @@ type IfStmt struct {
 	elseblock  *Block
 }
 
+func NewIfStmt(expression *Expression, simpleStmt SimpleStmt, block *Block, elseif *IfStmt, elseblock *Block) *IfStmt {
+	return &IfStmt{expression: expression, simpleStmt: simpleStmt, block: block, elseif: elseif, elseblock: elseblock}
+}
+
 func (s *IfStmt) Expression() *Expression {
 	return s.expression
 }

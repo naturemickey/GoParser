@@ -5109,6 +5109,14 @@ type IAssign_opContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetPrefix returns the prefix token.
+	GetPrefix() antlr.Token 
+
+
+	// SetPrefix sets the prefix token.
+	SetPrefix(antlr.Token) 
+
+
 	// IsAssign_opContext differentiates from other interfaces.
 	IsAssign_opContext()
 }
@@ -5116,6 +5124,7 @@ type IAssign_opContext interface {
 type Assign_opContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	prefix antlr.Token
 }
 
 func NewEmptyAssign_opContext() *Assign_opContext {
@@ -5139,6 +5148,12 @@ func NewAssign_opContext(parser antlr.Parser, parent antlr.ParserRuleContext, in
 }
 
 func (s *Assign_opContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *Assign_opContext) GetPrefix() antlr.Token { return s.prefix }
+
+
+func (s *Assign_opContext) SetPrefix(v antlr.Token) { s.prefix = v }
+
 
 func (s *Assign_opContext) ASSIGN() antlr.TerminalNode {
 	return s.GetToken(GoParserASSIGN, 0)
@@ -5253,10 +5268,17 @@ func (p *GoParser) Assign_op() (localctx IAssign_opContext) {
 	if ((((_la - 51)) & -(0x1f+1)) == 0 && ((1 << uint((_la - 51))) & ((1 << (GoParserOR - 51)) | (1 << (GoParserDIV - 51)) | (1 << (GoParserMOD - 51)) | (1 << (GoParserLSHIFT - 51)) | (1 << (GoParserRSHIFT - 51)) | (1 << (GoParserBIT_CLEAR - 51)) | (1 << (GoParserPLUS - 51)) | (1 << (GoParserMINUS - 51)) | (1 << (GoParserCARET - 51)) | (1 << (GoParserSTAR - 51)) | (1 << (GoParserAMPERSAND - 51)))) != 0) {
 		{
 			p.SetState(401)
+
+			var _lt = p.GetTokenStream().LT(1)
+
+			localctx.(*Assign_opContext).prefix = _lt
+
 			_la = p.GetTokenStream().LA(1)
 
 			if !(((((_la - 51)) & -(0x1f+1)) == 0 && ((1 << uint((_la - 51))) & ((1 << (GoParserOR - 51)) | (1 << (GoParserDIV - 51)) | (1 << (GoParserMOD - 51)) | (1 << (GoParserLSHIFT - 51)) | (1 << (GoParserRSHIFT - 51)) | (1 << (GoParserBIT_CLEAR - 51)) | (1 << (GoParserPLUS - 51)) | (1 << (GoParserMINUS - 51)) | (1 << (GoParserCARET - 51)) | (1 << (GoParserSTAR - 51)) | (1 << (GoParserAMPERSAND - 51)))) != 0)) {
-				p.GetErrorHandler().RecoverInline(p)
+				var _ri = p.GetErrorHandler().RecoverInline(p)
+
+				localctx.(*Assign_opContext).prefix = _ri
 			} else {
 				p.GetErrorHandler().ReportMatch(p)
 				p.Consume()

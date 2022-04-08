@@ -5,6 +5,18 @@ type ExprSwitchCase struct {
 	expressionList *ExpressionList
 }
 
+func NewExprSwitchCase(expressionList *ExpressionList) *ExprSwitchCase {
+	return &ExprSwitchCase{expressionList: expressionList}
+}
+
+func (s *ExprSwitchCase) ExpressionList() *ExpressionList {
+	return s.expressionList
+}
+
+func (s *ExprSwitchCase) SetExpressionList(expressionList *ExpressionList) {
+	s.expressionList = expressionList
+}
+
 func (s *ExprSwitchCase) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	if s.expressionList != nil {

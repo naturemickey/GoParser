@@ -7,6 +7,10 @@ type TypeSwitchStmt struct {
 	typeCaseClauses []*TypeCaseClause
 }
 
+func NewTypeSwitchStmt(typeSwitchGuard *TypeSwitchGuard, simpleStmt SimpleStmt, typeCaseClauses []*TypeCaseClause) *TypeSwitchStmt {
+	return &TypeSwitchStmt{typeSwitchGuard: typeSwitchGuard, simpleStmt: simpleStmt, typeCaseClauses: typeCaseClauses}
+}
+
 func (s *TypeSwitchStmt) TypeSwitchGuard() *TypeSwitchGuard {
 	return s.typeSwitchGuard
 }

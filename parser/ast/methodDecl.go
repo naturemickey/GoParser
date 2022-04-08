@@ -8,6 +8,10 @@ type MethodDecl struct {
 	block     *Block
 }
 
+func NewMethodDecl(receiver Receiver, funName string, signature *Signature, block *Block) *MethodDecl {
+	return &MethodDecl{receiver: receiver, funName: funName, signature: signature, block: block}
+}
+
 func (s *MethodDecl) Receiver() Receiver {
 	return s.receiver
 }

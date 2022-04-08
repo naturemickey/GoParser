@@ -7,6 +7,34 @@ type ConstSpec struct {
 	expressionList *ExpressionList
 }
 
+func NewConstSpec(identifierList *IdentifierList, type_ *Type_, expressionList *ExpressionList) *ConstSpec {
+	return &ConstSpec{identifierList: identifierList, type_: type_, expressionList: expressionList}
+}
+
+func (s *ConstSpec) IdentifierList() *IdentifierList {
+	return s.identifierList
+}
+
+func (s *ConstSpec) SetIdentifierList(identifierList *IdentifierList) {
+	s.identifierList = identifierList
+}
+
+func (s *ConstSpec) Type_() *Type_ {
+	return s.type_
+}
+
+func (s *ConstSpec) SetType_(type_ *Type_) {
+	s.type_ = type_
+}
+
+func (s *ConstSpec) ExpressionList() *ExpressionList {
+	return s.expressionList
+}
+
+func (s *ConstSpec) SetExpressionList(expressionList *ExpressionList) {
+	s.expressionList = expressionList
+}
+
 func (s *ConstSpec) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	cb.appendNode(s.identifierList).blank()

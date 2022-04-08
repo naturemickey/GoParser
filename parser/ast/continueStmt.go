@@ -5,6 +5,18 @@ type ContinueStmt struct {
 	label string
 }
 
+func NewContinueStmt(label string) *ContinueStmt {
+	return &ContinueStmt{label: label}
+}
+
+func (s *ContinueStmt) Label() string {
+	return s.label
+}
+
+func (s *ContinueStmt) SetLabel(label string) {
+	s.label = label
+}
+
 func (s *ContinueStmt) _Statement_() {
 	//TODO implement me
 	panic("implement me")
