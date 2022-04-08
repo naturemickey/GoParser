@@ -7,6 +7,10 @@ type CommCase struct {
 	recvStmt *RecvStmt
 }
 
+func NewCommCase(sendStmt *SendStmt, recvStmt *RecvStmt) *CommCase {
+	return &CommCase{sendStmt: sendStmt, recvStmt: recvStmt}
+}
+
 func (s *CommCase) SendStmt() *SendStmt {
 	return s.sendStmt
 }

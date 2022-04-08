@@ -5,6 +5,18 @@ type SelectStmt struct {
 	commClauses []*CommClause
 }
 
+func NewSelectStmt(commClauses []*CommClause) *SelectStmt {
+	return &SelectStmt{commClauses: commClauses}
+}
+
+func (s *SelectStmt) CommClauses() []*CommClause {
+	return s.commClauses
+}
+
+func (s *SelectStmt) SetCommClauses(commClauses []*CommClause) {
+	s.commClauses = commClauses
+}
+
 func (s *SelectStmt) _Statement_() {
 	//TODO implement me
 	panic("implement me")

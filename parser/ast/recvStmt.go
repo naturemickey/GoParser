@@ -8,6 +8,10 @@ type RecvStmt struct {
 	recvExpr       *Expression
 }
 
+func NewRecvStmt(expressionList *ExpressionList, identifierList *IdentifierList, recvExpr *Expression) *RecvStmt {
+	return &RecvStmt{expressionList: expressionList, identifierList: identifierList, recvExpr: recvExpr}
+}
+
 func (s *RecvStmt) ExpressionList() *ExpressionList {
 	return s.expressionList
 }

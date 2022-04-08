@@ -71,7 +71,13 @@ func (visitor *GoParserVisitorImpl) VisitImportPath(ctx *antlr4.ImportPathContex
 }
 
 func (visitor *GoParserVisitorImpl) VisitDeclaration(ctx *antlr4.DeclarationContext) interface{} {
-	return ctx.Accept(visitor)
+	if ctx.ConstDecl() != nil {
+		return ctx.ConstDecl().Accept(visitor)
+	}
+	if ctx.TypeDecl() != nil {
+		return ctx.TypeDecl().Accept(visitor)
+	}
+	return ctx.VarDecl().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitConstDecl(ctx *antlr4.ConstDeclContext) interface{} {
@@ -149,7 +155,7 @@ func (visitor *GoParserVisitorImpl) VisitMethodDecl(ctx *antlr4.MethodDeclContex
 }
 
 func (visitor *GoParserVisitorImpl) VisitReceiver(ctx *antlr4.ReceiverContext) interface{} {
-	return ctx.Accept(visitor)
+	return ctx.Parameters().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitVarDecl(ctx *antlr4.VarDeclContext) interface{} {
@@ -190,15 +196,69 @@ func (visitor *GoParserVisitorImpl) VisitStatementList(ctx *antlr4.StatementList
 }
 
 func (visitor *GoParserVisitorImpl) VisitStatement(ctx *antlr4.StatementContext) interface{} {
-	return ctx.Accept(visitor)
+	if ctx.Declaration() != nil {
+		return ctx.Declaration().Accept(visitor)
+	}
+	if ctx.LabeledStmt() != nil {
+		return ctx.LabeledStmt().Accept(visitor)
+	}
+	if ctx.SimpleStmt() != nil {
+		return ctx.SimpleStmt().Accept(visitor)
+	}
+	if ctx.GoStmt() != nil {
+		return ctx.GoStmt().Accept(visitor)
+	}
+	if ctx.ReturnStmt() != nil {
+		return ctx.ReturnStmt().Accept(visitor)
+	}
+	if ctx.BreakStmt() != nil {
+		return ctx.BreakStmt().Accept(visitor)
+	}
+	if ctx.ContinueStmt() != nil {
+		return ctx.ContinueStmt().Accept(visitor)
+	}
+	if ctx.GotoStmt() != nil {
+		return ctx.GotoStmt().Accept(visitor)
+	}
+	if ctx.FallthroughStmt() != nil {
+		return ctx.FallthroughStmt().Accept(visitor)
+	}
+	if ctx.Block() != nil {
+		return ctx.Block().Accept(visitor)
+	}
+	if ctx.IfStmt() != nil {
+		return ctx.IfStmt().Accept(visitor)
+	}
+	if ctx.SwitchStmt() != nil {
+		return ctx.SwitchStmt().Accept(visitor)
+	}
+	if ctx.SelectStmt() != nil {
+		return ctx.SelectStmt().Accept(visitor)
+	}
+	if ctx.ForStmt() != nil {
+		return ctx.ForStmt().Accept(visitor)
+	}
+	return ctx.DeferStmt().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitSimpleStmt(ctx *antlr4.SimpleStmtContext) interface{} {
-	return ctx.Accept(visitor)
+	if ctx.SendStmt() != nil {
+		return ctx.SendStmt().Accept(visitor)
+	}
+	if ctx.IncDecStmt() != nil {
+		return ctx.IncDecStmt().Accept(visitor)
+	}
+	if ctx.Assignment() != nil {
+		return ctx.Assignment().Accept(visitor)
+	}
+	if ctx.ExpressionStmt() != nil {
+		return ctx.ExpressionStmt().Accept(visitor)
+	}
+	return ctx.ShortVarDecl().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitExpressionStmt(ctx *antlr4.ExpressionStmtContext) interface{} {
-	return ctx.Accept(visitor)
+	return ctx.Expression().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitSendStmt(ctx *antlr4.SendStmtContext) interface{} {
@@ -308,7 +368,10 @@ func (visitor *GoParserVisitorImpl) VisitIfStmt(ctx *antlr4.IfStmtContext) inter
 }
 
 func (visitor *GoParserVisitorImpl) VisitSwitchStmt(ctx *antlr4.SwitchStmtContext) interface{} {
-	return ctx.Accept(visitor)
+	if ctx.ExprSwitchStmt() != nil {
+		return ctx.ExprSwitchStmt().Accept(visitor)
+	}
+	return ctx.TypeSwitchStmt().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitExprSwitchStmt(ctx *antlr4.ExprSwitchStmtContext) interface{} {
@@ -386,27 +449,80 @@ func (visitor *GoParserVisitorImpl) VisitTypeSwitchCase(ctx *antlr4.TypeSwitchCa
 }
 
 func (visitor *GoParserVisitorImpl) VisitTypeList(ctx *antlr4.TypeListContext) interface{} {
-	panic("implement me")
+	var types []*ast.Type_
+	for _, tree := range ctx.GetChildren() {
+		switch child := tree.(type) {
+		case *antlr4.Type_Context:
+			types = append(types, child.Accept(visitor).(*ast.Type_))
+		case antlr.TerminalNode:
+			if child.GetText() == "nil" {
+				types = append(types, nil)
+			}
+		}
+	}
+	return ast.NewTypeList(types)
 }
 
 func (visitor *GoParserVisitorImpl) VisitSelectStmt(ctx *antlr4.SelectStmtContext) interface{} {
-	panic("implement me")
+	var commClauses []*ast.CommClause
+	for _, clause := range ctx.AllCommClause() {
+		commClauses = append(commClauses, clause.Accept(visitor).(*ast.CommClause))
+	}
+	return ast.NewSelectStmt(commClauses)
 }
 
 func (visitor *GoParserVisitorImpl) VisitCommClause(ctx *antlr4.CommClauseContext) interface{} {
-	panic("implement me")
+	var commCase *ast.CommCase = ctx.CommCase().Accept(visitor).(*ast.CommCase)
+	var statementList *ast.StatementList
+	if ctx.StatementList() != nil {
+		statementList = ctx.StatementList().Accept(visitor).(*ast.StatementList)
+	}
+	return ast.NewCommClause(commCase, statementList)
 }
 
 func (visitor *GoParserVisitorImpl) VisitCommCase(ctx *antlr4.CommCaseContext) interface{} {
-	panic("implement me")
+	var sendStmt *ast.SendStmt
+	var recvStmt *ast.RecvStmt
+
+	if ctx.SendStmt() != nil {
+		sendStmt = ctx.SendStmt().Accept(visitor).(*ast.SendStmt)
+	}
+	if ctx.RecvStmt() != nil {
+		recvStmt = ctx.RecvStmt().Accept(visitor).(*ast.RecvStmt)
+	}
+	return ast.NewCommCase(sendStmt, recvStmt)
 }
 
 func (visitor *GoParserVisitorImpl) VisitRecvStmt(ctx *antlr4.RecvStmtContext) interface{} {
-	panic("implement me")
+	var expressionList *ast.ExpressionList
+	var identifierList *ast.IdentifierList
+	var recvExpr *ast.Expression = ctx.GetRecvExpr().Accept(visitor).(*ast.Expression)
+
+	if ctx.ExpressionList() != nil {
+		expressionList = ctx.ExpressionList().Accept(visitor).(*ast.ExpressionList)
+	}
+	if ctx.IdentifierList() != nil {
+		identifierList = ctx.IdentifierList().Accept(visitor).(*ast.IdentifierList)
+	}
+	return ast.NewRecvStmt(expressionList, identifierList, recvExpr)
 }
 
 func (visitor *GoParserVisitorImpl) VisitForStmt(ctx *antlr4.ForStmtContext) interface{} {
-	panic("implement me")
+	var expression *ast.Expression
+	var forClause *ast.ForClause
+	var rangeClause *ast.RangeClause
+	var block *ast.Block = ctx.Block().Accept(visitor).(*ast.Block)
+
+	if ctx.Expression() != nil {
+		expression = ctx.Expression().Accept(visitor).(*ast.Expression)
+	}
+	if ctx.ForClause() != nil {
+		forClause = ctx.ForClause().Accept(visitor).(*ast.ForClause)
+	}
+	if ctx.RangeClause() != nil {
+		rangeClause = ctx.RangeClause().Accept(visitor).(*ast.RangeClause)
+	}
+	return ast.NewForStmt(expression, forClause, rangeClause, block)
 }
 
 func (visitor *GoParserVisitorImpl) VisitForClause(ctx *antlr4.ForClauseContext) interface{} {
