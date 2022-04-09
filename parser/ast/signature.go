@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type Signature struct {
 	BaseNode
 
@@ -30,7 +32,7 @@ func (s *Signature) SetResult(result Result) {
 func (s *Signature) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	cb.appendNode(s.parameters)
-	if s.result != nil {
+	if s.result != nil && !reflect.ValueOf(s.result).IsNil() {
 		cb.blank().appendNode(s.result)
 	}
 	return cb

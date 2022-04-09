@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type ExprSwitchStmt struct {
 	BaseNode
 	expression      *Expression
@@ -48,7 +50,7 @@ func (s *ExprSwitchStmt) _SwitchStmt_() {
 func (s *ExprSwitchStmt) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	cb.appendString("switch ")
-	if s.simpleStmt != nil {
+	if s.simpleStmt != nil && !reflect.ValueOf(s.simpleStmt).IsNil() {
 		cb.appendNode(s.simpleStmt).appendString("; ")
 	}
 	cb.appendNode(s.expression)

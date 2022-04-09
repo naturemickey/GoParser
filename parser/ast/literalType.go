@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type LiteralType struct {
 	BaseNode
 
@@ -70,7 +72,7 @@ func (s *LiteralType) codeBuilder() *CodeBuilder {
 	if s.arrayType != nil {
 		return s.arrayType.codeBuilder()
 	}
-	if s.elementType != nil {
+	if s.elementType != nil && !reflect.ValueOf(s.elementType).IsNil() {
 		return NewCodeBuilder().appendString("[...]").appendNode(s.elementType)
 	}
 	if s.sliceType != nil {

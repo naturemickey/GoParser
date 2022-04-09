@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type NonNamedType struct {
 	BaseNode
 
@@ -28,7 +30,7 @@ func (s *NonNamedType) SetNonNamedType(nonNamedType *NonNamedType) {
 }
 
 func (s *NonNamedType) codeBuilder() *CodeBuilder {
-	if s.typeLit != nil {
+	if s.typeLit != nil && !reflect.ValueOf(s.typeLit).IsNil() {
 		return s.typeLit.codeBuilder()
 	}
 	return NewCodeBuilder().appendString("(").appendNode(s.nonNamedType).appendString(")")

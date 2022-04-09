@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type LabeledStmt struct {
 	BaseNode
 	label     string
@@ -35,7 +37,7 @@ func (s *LabeledStmt) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 
 	cb.appendString(s.label).appendString(":")
-	if s.statement != nil {
+	if s.statement != nil && !reflect.ValueOf(s.statement).IsNil() {
 		cb.appendString(" ").appendNode(s.statement)
 	}
 	return cb

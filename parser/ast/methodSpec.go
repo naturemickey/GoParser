@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type MethodSpec struct {
 	BaseNode
 
@@ -44,7 +46,7 @@ func (s *MethodSpec) _IMethodSpecOrTypeName_() {
 func (s *MethodSpec) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	cb.appendString(s.methodName).appendNode(s.parameters)
-	if s.result != nil {
+	if s.result != nil && !reflect.ValueOf(s.result).IsNil() {
 		cb.blank().appendNode(s.result)
 	}
 	return cb

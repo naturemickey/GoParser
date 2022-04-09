@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type Operand struct {
 	BaseNode
 
@@ -37,7 +39,7 @@ func (s *Operand) SetExpression(expression *Expression) {
 }
 
 func (s *Operand) codeBuilder() *CodeBuilder {
-	if s.literal != nil {
+	if s.literal != nil && !reflect.ValueOf(s.literal).IsNil() {
 		return s.literal.codeBuilder()
 	}
 	if s.operandName != "" {

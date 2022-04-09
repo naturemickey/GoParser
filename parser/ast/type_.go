@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type Type_ struct {
 	BaseNode
 
@@ -55,7 +57,7 @@ func (s *Type_) codeBuilder() *CodeBuilder {
 	if s.typeName != nil {
 		return s.typeName.codeBuilder()
 	}
-	if s.typeLit != nil {
+	if s.typeLit != nil && !reflect.ValueOf(s.typeLit).IsNil() {
 		return s.typeLit.codeBuilder()
 	}
 	return NewCodeBuilder().appendString("(").appendNode(s.type_).appendString(")")

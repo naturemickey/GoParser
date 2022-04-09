@@ -1,5 +1,7 @@
 package ast
 
+import "reflect"
+
 type KeyedElement struct {
 	BaseNode
 
@@ -29,7 +31,7 @@ func (s *KeyedElement) SetElement(element Element) {
 
 func (s *KeyedElement) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
-	if s.key != nil {
+	if s.key != nil && !reflect.ValueOf(s.key).IsNil() {
 		cb.appendNode(s.key).appendString(": ")
 	}
 	cb.appendNode(s.element)
