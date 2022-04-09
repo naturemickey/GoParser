@@ -32,7 +32,7 @@ func NewName(name string, tree ast.INode, type_ NameType, typeLiteral string) *N
 type NameType int
 
 const (
-	FUNCATION = iota
+	FUNCATION NameType = iota
 	METHOD
 	VARIABLE
 )
