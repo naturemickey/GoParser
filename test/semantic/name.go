@@ -33,5 +33,6 @@ type NameType int
 
 const (
 	FUNCATION = iota
+	METHOD
 	VARIABLE
 )

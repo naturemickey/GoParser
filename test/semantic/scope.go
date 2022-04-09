@@ -5,6 +5,10 @@ type Scope struct {
 	parent *Scope
 }
 
+func NewScopeRoot() *Scope {
+	return new(Scope)
+}
+
 func (s *Scope) AddName(name string, val Name) {
 	s.names[name] = val
 }
