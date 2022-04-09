@@ -14,6 +14,10 @@ type PrimaryExpr struct {
 	arguments     *Arguments
 }
 
+func NewPrimaryExpr(operand *Operand, conversion *Conversion, methodExpr *MethodExpr, primaryExpr *PrimaryExpr, id string, index *Index, slice *Slice, typeAssertion *TypeAssertion, arguments *Arguments) *PrimaryExpr {
+	return &PrimaryExpr{operand: operand, conversion: conversion, methodExpr: methodExpr, primaryExpr: primaryExpr, id: id, index: index, slice: slice, typeAssertion: typeAssertion, arguments: arguments}
+}
+
 func (s *PrimaryExpr) Id() string {
 	return s.id
 }

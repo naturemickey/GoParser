@@ -6,6 +6,10 @@ type Parameters struct {
 	parameterDecls []*ParameterDecl
 }
 
+func NewParameters(parameterDecls []*ParameterDecl) *Parameters {
+	return &Parameters{parameterDecls: parameterDecls}
+}
+
 func (s *Parameters) ParameterDecls() []*ParameterDecl {
 	return s.parameterDecls
 }

@@ -8,6 +8,10 @@ type MethodSpec struct {
 	result     Result
 }
 
+func NewMethodSpec(methodName string, parameters *Parameters, result Result) *MethodSpec {
+	return &MethodSpec{methodName: methodName, parameters: parameters, result: result}
+}
+
 func (s *MethodSpec) MethodName() string {
 	return s.methodName
 }

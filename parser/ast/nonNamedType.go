@@ -7,6 +7,10 @@ type NonNamedType struct {
 	nonNamedType *NonNamedType
 }
 
+func NewNonNamedType(typeLit TypeLit, nonNamedType *NonNamedType) *NonNamedType {
+	return &NonNamedType{typeLit: typeLit, nonNamedType: nonNamedType}
+}
+
 func (s *NonNamedType) TypeLit() TypeLit {
 	return s.typeLit
 }

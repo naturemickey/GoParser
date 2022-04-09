@@ -11159,6 +11159,26 @@ type IChannelTypeContext interface {
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
+	// GetCh returns the ch token.
+	GetCh() antlr.Token 
+
+	// GetCh_re returns the ch_re token.
+	GetCh_re() antlr.Token 
+
+	// GetRe_ch returns the re_ch token.
+	GetRe_ch() antlr.Token 
+
+
+	// SetCh sets the ch token.
+	SetCh(antlr.Token) 
+
+	// SetCh_re sets the ch_re token.
+	SetCh_re(antlr.Token) 
+
+	// SetRe_ch sets the re_ch token.
+	SetRe_ch(antlr.Token) 
+
+
 	// IsChannelTypeContext differentiates from other interfaces.
 	IsChannelTypeContext()
 }
@@ -11166,6 +11186,9 @@ type IChannelTypeContext interface {
 type ChannelTypeContext struct {
 	*antlr.BaseParserRuleContext
 	parser antlr.Parser
+	ch antlr.Token
+	ch_re antlr.Token
+	re_ch antlr.Token
 }
 
 func NewEmptyChannelTypeContext() *ChannelTypeContext {
@@ -11190,6 +11213,20 @@ func NewChannelTypeContext(parser antlr.Parser, parent antlr.ParserRuleContext, 
 
 func (s *ChannelTypeContext) GetParser() antlr.Parser { return s.parser }
 
+func (s *ChannelTypeContext) GetCh() antlr.Token { return s.ch }
+
+func (s *ChannelTypeContext) GetCh_re() antlr.Token { return s.ch_re }
+
+func (s *ChannelTypeContext) GetRe_ch() antlr.Token { return s.re_ch }
+
+
+func (s *ChannelTypeContext) SetCh(v antlr.Token) { s.ch = v }
+
+func (s *ChannelTypeContext) SetCh_re(v antlr.Token) { s.ch_re = v }
+
+func (s *ChannelTypeContext) SetRe_ch(v antlr.Token) { s.re_ch = v }
+
+
 func (s *ChannelTypeContext) ElementType() IElementTypeContext {
 	var t = s.GetTypedRuleContext(reflect.TypeOf((*IElementTypeContext)(nil)).Elem(), 0)
 
@@ -11200,12 +11237,12 @@ func (s *ChannelTypeContext) ElementType() IElementTypeContext {
 	return t.(IElementTypeContext)
 }
 
-func (s *ChannelTypeContext) CHAN() antlr.TerminalNode {
-	return s.GetToken(GoParserCHAN, 0)
-}
-
 func (s *ChannelTypeContext) RECEIVE() antlr.TerminalNode {
 	return s.GetToken(GoParserRECEIVE, 0)
+}
+
+func (s *ChannelTypeContext) CHAN() antlr.TerminalNode {
+	return s.GetToken(GoParserCHAN, 0)
 }
 
 func (s *ChannelTypeContext) GetRuleContext() antlr.RuleContext {
@@ -11269,14 +11306,20 @@ func (p *GoParser) ChannelType() (localctx IChannelTypeContext) {
 	case 1:
 		{
 			p.SetState(671)
-			p.Match(GoParserCHAN)
+
+			var _m = p.Match(GoParserCHAN)
+
+			localctx.(*ChannelTypeContext).ch = _m
 		}
 
 
 	case 2:
 		{
 			p.SetState(672)
-			p.Match(GoParserCHAN)
+
+			var _m = p.Match(GoParserCHAN)
+
+			localctx.(*ChannelTypeContext).ch_re = _m
 		}
 		{
 			p.SetState(673)
@@ -11287,7 +11330,10 @@ func (p *GoParser) ChannelType() (localctx IChannelTypeContext) {
 	case 3:
 		{
 			p.SetState(674)
-			p.Match(GoParserRECEIVE)
+
+			var _m = p.Match(GoParserRECEIVE)
+
+			localctx.(*ChannelTypeContext).re_ch = _m
 		}
 		{
 			p.SetState(675)

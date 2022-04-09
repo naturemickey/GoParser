@@ -7,6 +7,10 @@ type Signature struct {
 	result     Result
 }
 
+func NewSignature(parameters *Parameters, result Result) *Signature {
+	return &Signature{parameters: parameters, result: result}
+}
+
 func (s *Signature) Parameters() *Parameters {
 	return s.parameters
 }

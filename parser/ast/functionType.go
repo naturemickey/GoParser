@@ -6,6 +6,10 @@ type FunctionType struct {
 	signature *Signature
 }
 
+func NewFunctionType(signature *Signature) *FunctionType {
+	return &FunctionType{signature: signature}
+}
+
 func (s *FunctionType) Signature() *Signature {
 	return s.signature
 }

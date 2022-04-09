@@ -7,6 +7,10 @@ type MapType struct {
 	elementType ElementType
 }
 
+func NewMapType(type_ *Type_, elementType ElementType) *MapType {
+	return &MapType{type_: type_, elementType: elementType}
+}
+
 func (s *MapType) Type_() *Type_ {
 	return s.type_
 }

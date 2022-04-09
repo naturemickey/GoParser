@@ -3,15 +3,19 @@ package ast
 type InterfaceType struct {
 	BaseNode
 
-	methodSpecOrTypeName []IMethodSpecOrTypeName
+	methodSpecOrTypeNames []IMethodSpecOrTypeName
 }
 
-func (s *InterfaceType) MethodSpecOrTypeName() []IMethodSpecOrTypeName {
-	return s.methodSpecOrTypeName
+func NewInterfaceType(methodSpecOrTypeNames []IMethodSpecOrTypeName) *InterfaceType {
+	return &InterfaceType{methodSpecOrTypeNames: methodSpecOrTypeNames}
 }
 
-func (s *InterfaceType) SetMethodSpecOrTypeName(methodSpecOrTypeName []IMethodSpecOrTypeName) {
-	s.methodSpecOrTypeName = methodSpecOrTypeName
+func (s *InterfaceType) MethodSpecOrTypeNames() []IMethodSpecOrTypeName {
+	return s.methodSpecOrTypeNames
+}
+
+func (s *InterfaceType) SetMethodSpecOrTypeNames(methodSpecOrTypeNames []IMethodSpecOrTypeName) {
+	s.methodSpecOrTypeNames = methodSpecOrTypeNames
 }
 
 func (s *InterfaceType) _TypeLit_() {
@@ -22,7 +26,7 @@ func (s *InterfaceType) _TypeLit_() {
 func (s *InterfaceType) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	cb.appendString("interface {\n")
-	for _, mt := range s.methodSpecOrTypeName {
+	for _, mt := range s.methodSpecOrTypeNames {
 		cb.appendNode(mt).newLine()
 	}
 	cb.appendString("}")

@@ -7,6 +7,10 @@ type ChannelType struct {
 	elementType ElementType
 }
 
+func NewChannelType(title ChannelTitle, elementType ElementType) *ChannelType {
+	return &ChannelType{title: title, elementType: elementType}
+}
+
 type ChannelTitle int
 
 const (

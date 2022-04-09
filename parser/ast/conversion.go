@@ -7,6 +7,10 @@ type Conversion struct {
 	expression   *Expression
 }
 
+func NewConversion(nonNamedType *NonNamedType, expression *Expression) *Conversion {
+	return &Conversion{nonNamedType: nonNamedType, expression: expression}
+}
+
 func (s *Conversion) NonNamedType() *NonNamedType {
 	return s.nonNamedType
 }

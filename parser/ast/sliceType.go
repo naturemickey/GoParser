@@ -6,6 +6,10 @@ type SliceType struct {
 	elementType ElementType
 }
 
+func NewSliceType(elementType ElementType) *SliceType {
+	return &SliceType{elementType: elementType}
+}
+
 func (s *SliceType) ElementType() ElementType {
 	return s.elementType
 }

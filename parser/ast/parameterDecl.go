@@ -8,6 +8,10 @@ type ParameterDecl struct {
 	type_          *Type_
 }
 
+func NewParameterDecl(identifierList *IdentifierList, ellipsis bool, type_ *Type_) *ParameterDecl {
+	return &ParameterDecl{identifierList: identifierList, ellipsis: ellipsis, type_: type_}
+}
+
 func (s *ParameterDecl) IdentifierList() *IdentifierList {
 	return s.identifierList
 }

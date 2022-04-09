@@ -3,10 +3,9 @@ package ast
 type Expression struct {
 	BaseNode
 
-	primaryExpr     *PrimaryExpr
-	expression      *Expression
-	expressionLeft  *Expression
-	expressionRight *Expression
+	primaryExpr *PrimaryExpr
+	expression  *Expression
+	expression2 *Expression
 
 	unaryOp    string
 	mulOp      string
@@ -14,6 +13,84 @@ type Expression struct {
 	relOp      string
 	logicalAnd string
 	logicalOr  string
+}
+
+type ExpressionBuilder struct {
+	primaryExpr *PrimaryExpr
+	expression  *Expression
+	expression2 *Expression
+
+	unaryOp    string
+	mulOp      string
+	addOp      string
+	relOp      string
+	logicalAnd string
+	logicalOr  string
+}
+
+func NewExpressionBuilder() *ExpressionBuilder {
+	return &ExpressionBuilder{}
+}
+
+func (b *ExpressionBuilder) SetPrimaryExpr(primaryExpr *PrimaryExpr) *ExpressionBuilder {
+	b.primaryExpr = primaryExpr
+	return b
+}
+
+func (b *ExpressionBuilder) SetExpression(expression *Expression) *ExpressionBuilder {
+	b.expression = expression
+	return b
+}
+
+func (b *ExpressionBuilder) SetExpression2(expression2 *Expression) *ExpressionBuilder {
+	b.expression2 = expression2
+	return b
+}
+
+func (b *ExpressionBuilder) SetUnaryOp(unaryOp string) *ExpressionBuilder {
+	b.unaryOp = unaryOp
+	return b
+}
+
+func (b *ExpressionBuilder) SetMulOp(mulOp string) *ExpressionBuilder {
+	b.mulOp = mulOp
+	return b
+}
+
+func (b *ExpressionBuilder) SetAddOp(addOp string) *ExpressionBuilder {
+	b.addOp = addOp
+	return b
+}
+
+func (b *ExpressionBuilder) SetRelOp(relOp string) *ExpressionBuilder {
+	b.relOp = relOp
+	return b
+}
+
+func (b *ExpressionBuilder) SetLogicalAnd(logicalAnd string) *ExpressionBuilder {
+	b.logicalAnd = logicalAnd
+	return b
+}
+
+func (b *ExpressionBuilder) SetLogicalOr(logicalOr string) *ExpressionBuilder {
+	b.logicalOr = logicalOr
+	return b
+}
+
+func (b *ExpressionBuilder) Build() *Expression {
+	return NewExpression(b.primaryExpr, b.expression, b.expression2, b.unaryOp, b.mulOp, b.addOp, b.relOp, b.logicalAnd, b.logicalOr)
+}
+
+func NewExpression(primaryExpr *PrimaryExpr, expression *Expression, expression2 *Expression, unaryOp string, mulOp string, addOp string, relOp string, logicalAnd string, logicalOr string) *Expression {
+	return &Expression{primaryExpr: primaryExpr, expression: expression, expression2: expression2, unaryOp: unaryOp, mulOp: mulOp, addOp: addOp, relOp: relOp, logicalAnd: logicalAnd, logicalOr: logicalOr}
+}
+
+func (s *Expression) Expression2() *Expression {
+	return s.expression2
+}
+
+func (s *Expression) SetExpression2(expression2 *Expression) {
+	s.expression2 = expression2
 }
 
 func (s *Expression) _Element_() {
@@ -40,22 +117,6 @@ func (s *Expression) Expression() *Expression {
 
 func (s *Expression) SetExpression(expression *Expression) {
 	s.expression = expression
-}
-
-func (s *Expression) ExpressionLeft() *Expression {
-	return s.expressionLeft
-}
-
-func (s *Expression) SetExpressionLeft(expressionLeft *Expression) {
-	s.expressionLeft = expressionLeft
-}
-
-func (s *Expression) ExpressionRight() *Expression {
-	return s.expressionRight
-}
-
-func (s *Expression) SetExpressionRight(expressionRight *Expression) {
-	s.expressionRight = expressionRight
 }
 
 func (s *Expression) UnaryOp() string {
@@ -134,23 +195,19 @@ func (s *Expression) codeBuilder() *CodeBuilder {
 	if s.unaryOp != "" {
 		return cb.appendString(s.unaryOp).appendNode(s.expression)
 	}
-
 	if s.mulOp != "" {
-		return cb.appendNode(s.expressionLeft).blank().appendString(s.mulOp).blank().appendNode(s.expressionRight)
+		return cb.appendNode(s.expression).blank().appendString(s.mulOp).blank().appendNode(s.expression2)
 	}
-
 	if s.addOp != "" {
-		return cb.appendNode(s.expressionLeft).blank().appendString(s.addOp).blank().appendNode(s.expressionRight)
+		return cb.appendNode(s.expression).blank().appendString(s.addOp).blank().appendNode(s.expression2)
 	}
-
 	if s.relOp != "" {
-		return cb.appendNode(s.expressionLeft).blank().appendString(s.relOp).blank().appendNode(s.expressionRight)
+		return cb.appendNode(s.expression).blank().appendString(s.relOp).blank().appendNode(s.expression2)
 	}
-
 	if s.logicalAnd != "" {
-		return cb.appendNode(s.expressionLeft).blank().appendString(s.logicalAnd).blank().appendNode(s.expressionRight)
+		return cb.appendNode(s.expression).blank().appendString(s.logicalAnd).blank().appendNode(s.expression2)
 	}
-	return cb.appendNode(s.expressionLeft).blank().appendString(s.logicalOr).blank().appendNode(s.expressionRight)
+	return cb.appendNode(s.expression).blank().appendString(s.logicalOr).blank().appendNode(s.expression2)
 }
 
 func (s *Expression) Children() []INode {

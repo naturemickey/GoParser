@@ -228,7 +228,7 @@ sliceType: L_BRACKET R_BRACKET elementType;
 // It's possible to replace `type` with more restricted typeLit list and also pay attention to nil maps
 mapType: MAP L_BRACKET type_ R_BRACKET elementType;
 
-channelType: (CHAN | CHAN RECEIVE | RECEIVE CHAN) elementType;
+channelType: (ch=CHAN | ch_re=CHAN RECEIVE | re_ch=RECEIVE CHAN) elementType;
 
 methodSpec:
 	IDENTIFIER parameters result
