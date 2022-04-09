@@ -6,6 +6,10 @@ type MethodExpr struct {
 	id           string
 }
 
+func NewMethodExpr(nonNamedType *NonNamedType, id string) *MethodExpr {
+	return &MethodExpr{nonNamedType: nonNamedType, id: id}
+}
+
 func (s *MethodExpr) NonNamedType() *NonNamedType {
 	return s.nonNamedType
 }

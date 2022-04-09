@@ -56,7 +56,7 @@ func (s *SourceFile) Children() []INode {
 func (s *SourceFile) codeBuilder() *CodeBuilder {
 	cb := new(CodeBuilder)
 
-	cb.appendNode(s.packageClause)
+	cb.appendNode(s.packageClause).newLine()
 
 	for _, decl := range s.importDecls {
 		cb.appendNode(decl).newLine()

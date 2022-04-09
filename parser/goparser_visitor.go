@@ -813,107 +813,259 @@ func (visitor *GoParserVisitorImpl) VisitConversion(ctx *antlr4.ConversionContex
 }
 
 func (visitor *GoParserVisitorImpl) VisitNonNamedType(ctx *antlr4.NonNamedTypeContext) interface{} {
-	panic("implement me")
+	var typeLit ast.TypeLit
+	var nonNamedType *ast.NonNamedType
+	if ctx.TypeLit() != nil {
+		typeLit = ctx.TypeLit().Accept(visitor).(ast.TypeLit)
+	}
+	if ctx.NonNamedType() != nil {
+		nonNamedType = ctx.NonNamedType().Accept(visitor).(*ast.NonNamedType)
+	}
+	return ast.NewNonNamedType(typeLit, nonNamedType)
 }
 
 func (visitor *GoParserVisitorImpl) VisitOperand(ctx *antlr4.OperandContext) interface{} {
-	panic("implement me")
+	var literal ast.Literal
+	var operandName string
+	var expression *ast.Expression
+	if ctx.Literal() != nil {
+		literal = ctx.Literal().Accept(visitor).(ast.Literal)
+	}
+	if ctx.OperandName() != nil {
+		operandName = ctx.OperandName().GetText()
+	}
+	if ctx.Expression() != nil {
+		expression = ctx.Expression().Accept(visitor).(*ast.Expression)
+	}
+	return ast.NewOperand(literal, operandName, expression)
 }
 
 func (visitor *GoParserVisitorImpl) VisitLiteral(ctx *antlr4.LiteralContext) interface{} {
-	panic("implement me")
+	if ctx.BasicLit() != nil {
+		return ctx.BasicLit().Accept(visitor)
+	}
+	if ctx.CompositeLit() != nil {
+		return ctx.CompositeLit().Accept(visitor)
+	}
+	return ctx.FunctionLit().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitBasicLit(ctx *antlr4.BasicLitContext) interface{} {
-	panic("implement me")
+	var isNil bool = ctx.NIL_LIT() != nil
+	var integer *ast.Integer
+	var string_ string
+	var float string
+	if ctx.Integer() != nil {
+		integer = ctx.Integer().Accept(visitor).(*ast.Integer)
+	}
+	if ctx.String_() != nil {
+		string_ = ctx.String_().GetText()
+	}
+	if ctx.FLOAT_LIT() != nil {
+		float = ctx.FLOAT_LIT().GetText()
+	}
+	return ast.NewBasicLit(isNil, integer, string_, float)
 }
 
 func (visitor *GoParserVisitorImpl) VisitInteger(ctx *antlr4.IntegerContext) interface{} {
-	panic("implement me")
+	if ctx.DECIMAL_LIT() != nil {
+		return ast.NewInteger(ast.DECIMAL_LIT, ctx.DECIMAL_LIT().GetText())
+	}
+	if ctx.BINARY_LIT() != nil {
+		return ast.NewInteger(ast.BINARY_LIT, ctx.BINARY_LIT().GetText())
+	}
+	if ctx.OCTAL_LIT() != nil {
+		return ast.NewInteger(ast.OCTAL_LIT, ctx.OCTAL_LIT().GetText())
+	}
+	if ctx.HEX_LIT() != nil {
+		return ast.NewInteger(ast.HEX_LIT, ctx.HEX_LIT().GetText())
+	}
+	if ctx.IMAGINARY_LIT() != nil {
+		return ast.NewInteger(ast.IMAGINARY_LIT, ctx.IMAGINARY_LIT().GetText())
+	}
+	return ast.NewInteger(ast.DECIMAL_LIT, ctx.RUNE_LIT().GetText())
 }
 
 func (visitor *GoParserVisitorImpl) VisitOperandName(ctx *antlr4.OperandNameContext) interface{} {
-	panic("implement me")
+	panic("It's impossible to run to here")
 }
 
 func (visitor *GoParserVisitorImpl) VisitQualifiedIdent(ctx *antlr4.QualifiedIdentContext) interface{} {
-	panic("implement me")
+	id1 := ctx.IDENTIFIER(0).GetText()
+	id2 := ctx.IDENTIFIER(1).GetText()
+	return ast.NewQualifiedIdent(id1, id2)
 }
 
 func (visitor *GoParserVisitorImpl) VisitCompositeLit(ctx *antlr4.CompositeLitContext) interface{} {
-	panic("implement me")
+	literalType := ctx.LiteralType().Accept(visitor).(*ast.LiteralType)
+	literalValue := ctx.LiteralValue().Accept(visitor).(*ast.LiteralValue)
+	return ast.NewCompositeLit(literalType, literalValue)
 }
 
 func (visitor *GoParserVisitorImpl) VisitLiteralType(ctx *antlr4.LiteralTypeContext) interface{} {
-	panic("implement me")
+	var structType *ast.StructType
+	var arrayType *ast.ArrayType
+	var elementType ast.ElementType
+	var sliceType *ast.SliceType
+	var mapType *ast.MapType
+	var typeName *ast.TypeName
+
+	if ctx.StructType() != nil {
+		structType = ctx.StructType().Accept(visitor).(*ast.StructType)
+	}
+	if ctx.ArrayType() != nil {
+		arrayType = ctx.ArrayType().Accept(visitor).(*ast.ArrayType)
+	}
+	if ctx.ElementType() != nil {
+		elementType = ctx.ElementType().Accept(visitor).(ast.ElementType)
+	}
+	if ctx.SliceType() != nil {
+		sliceType = ctx.SliceType().Accept(visitor).(*ast.SliceType)
+	}
+	if ctx.MapType() != nil {
+		mapType = ctx.MapType().Accept(visitor).(*ast.MapType)
+	}
+	if ctx.TypeName() != nil {
+		typeName = ctx.TypeName().Accept(visitor).(*ast.TypeName)
+	}
+	return ast.NewLiteralType(structType, arrayType, elementType, sliceType, mapType, typeName)
 }
 
 func (visitor *GoParserVisitorImpl) VisitLiteralValue(ctx *antlr4.LiteralValueContext) interface{} {
-	panic("implement me")
+	var elementList *ast.ElementList
+	if ctx.ElementList() != nil {
+		elementList = ctx.ElementList().Accept(visitor).(*ast.ElementList)
+	}
+	return ast.NewLiteralValue(elementList)
 }
 
 func (visitor *GoParserVisitorImpl) VisitElementList(ctx *antlr4.ElementListContext) interface{} {
-	panic("implement me")
+	var keyedElements []*ast.KeyedElement
+	for _, element := range ctx.AllKeyedElement() {
+		keyedElements = append(keyedElements, element.Accept(visitor).(*ast.KeyedElement))
+	}
+	return ast.NewElementList(keyedElements)
 }
 
 func (visitor *GoParserVisitorImpl) VisitKeyedElement(ctx *antlr4.KeyedElementContext) interface{} {
-	panic("implement me")
+	var key ast.Key
+	element := ctx.Element().Accept(visitor).(ast.Element)
+	if ctx.Key() != nil {
+		key = ctx.Key().Accept(visitor).(ast.Key)
+	}
+	return ast.NewKeyedElement(key, element)
 }
 
 func (visitor *GoParserVisitorImpl) VisitKey(ctx *antlr4.KeyContext) interface{} {
-	panic("implement me")
+	if ctx.Expression() != nil {
+		return ctx.Expression().Accept(visitor)
+	}
+	return ctx.LiteralValue().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitElement(ctx *antlr4.ElementContext) interface{} {
-	panic("implement me")
+	if ctx.Expression() != nil {
+		return ctx.Expression().Accept(visitor)
+	}
+	return ctx.LiteralValue().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitStructType(ctx *antlr4.StructTypeContext) interface{} {
-	panic("implement me")
+	var fieldDecls []*ast.FieldDecl
+	for _, decl := range ctx.AllFieldDecl() {
+		fieldDecls = append(fieldDecls, decl.Accept(visitor).(*ast.FieldDecl))
+	}
+	return ast.NewStructType(fieldDecls)
 }
 
 func (visitor *GoParserVisitorImpl) VisitFieldDecl(ctx *antlr4.FieldDeclContext) interface{} {
-	panic("implement me")
+	var identifierList *ast.IdentifierList
+	var type_ *ast.Type_
+	var embeddedField *ast.EmbeddedField
+	var tag string
+
+	if ctx.IdentifierList() != nil {
+		identifierList = ctx.IdentifierList().Accept(visitor).(*ast.IdentifierList)
+	}
+	if ctx.Type_() != nil {
+		type_ = ctx.Type_().Accept(visitor).(*ast.Type_)
+	}
+	if ctx.EmbeddedField() != nil {
+		embeddedField = ctx.EmbeddedField().Accept(visitor).(*ast.EmbeddedField)
+	}
+	if ctx.GetTag() != nil {
+		tag = ctx.GetTag().GetText()
+	}
+	return ast.NewFieldDecl(identifierList, type_, embeddedField, tag)
 }
 
 func (visitor *GoParserVisitorImpl) VisitString_(ctx *antlr4.String_Context) interface{} {
-	panic("implement me")
+	panic("It is impossible to run to this line")
 }
 
 func (visitor *GoParserVisitorImpl) VisitEmbeddedField(ctx *antlr4.EmbeddedFieldContext) interface{} {
-	panic("implement me")
+	star := ctx.STAR() != nil
+	typeName := ctx.TypeName().Accept(visitor).(*ast.TypeName)
+	return ast.NewEmbeddedField(star, typeName)
 }
 
 func (visitor *GoParserVisitorImpl) VisitFunctionLit(ctx *antlr4.FunctionLitContext) interface{} {
-	panic("implement me")
+	signature := ctx.Signature().Accept(visitor).(*ast.Signature)
+	block := ctx.Block().Accept(visitor).(*ast.Block)
+	return ast.NewFunctionLit(signature, block)
 }
 
 func (visitor *GoParserVisitorImpl) VisitIndex(ctx *antlr4.IndexContext) interface{} {
-	panic("implement me")
+	expression := ctx.Expression().Accept(visitor).(*ast.Expression)
+	return ast.NewIndex(expression)
 }
 
 func (visitor *GoParserVisitorImpl) VisitSlice(ctx *antlr4.SliceContext) interface{} {
-	panic("implement me")
+	var expression1 *ast.Expression
+	var expression2 *ast.Expression
+	var expression3 *ast.Expression
+
+	if len(ctx.AllExpression()) > 0 {
+		expression1 = ctx.Expression(0).Accept(visitor).(*ast.Expression)
+	}
+	if len(ctx.AllExpression()) > 1 {
+		expression2 = ctx.Expression(1).Accept(visitor).(*ast.Expression)
+	}
+	if len(ctx.AllExpression()) > 2 {
+		expression3 = ctx.Expression(2).Accept(visitor).(*ast.Expression)
+	}
+	return ast.NewSlice(expression1, expression2, expression3)
 }
 
 func (visitor *GoParserVisitorImpl) VisitTypeAssertion(ctx *antlr4.TypeAssertionContext) interface{} {
-	panic("implement me")
+	return ast.NewTypeAssertion(ctx.Type_().Accept(visitor).(*ast.Type_))
 }
 
 func (visitor *GoParserVisitorImpl) VisitArguments(ctx *antlr4.ArgumentsContext) interface{} {
-	panic("implement me")
+	var expressionList *ast.ExpressionList
+	var nonNamedType *ast.NonNamedType
+	var ellipsis bool = ctx.ELLIPSIS() != nil
+	if ctx.ExpressionList() != nil {
+		expressionList = ctx.ExpressionList().Accept(visitor).(*ast.ExpressionList)
+	}
+	if ctx.NonNamedType() != nil {
+		nonNamedType = ctx.NonNamedType().Accept(visitor).(*ast.NonNamedType)
+	}
+	return ast.NewArguments(expressionList, nonNamedType, ellipsis)
 }
 
 func (visitor *GoParserVisitorImpl) VisitMethodExpr(ctx *antlr4.MethodExprContext) interface{} {
-	panic("implement me")
+	nonNamedType := ctx.NonNamedType().Accept(visitor).(*ast.NonNamedType)
+	id := ctx.IDENTIFIER().GetText()
+	return ast.NewMethodExpr(nonNamedType, id)
 }
 
 func (visitor *GoParserVisitorImpl) VisitReceiverType(ctx *antlr4.ReceiverTypeContext) interface{} {
-	panic("implement me")
+	return ctx.Type_().Accept(visitor)
 }
 
 func (visitor *GoParserVisitorImpl) VisitEos(ctx *antlr4.EosContext) interface{} {
-	panic("implement me")
+	return ast.NewEos(ctx.GetText())
 }
 
 var _ antlr4.GoParserVisitor = (*GoParserVisitorImpl)(nil)

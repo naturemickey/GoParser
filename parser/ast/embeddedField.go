@@ -7,6 +7,10 @@ type EmbeddedField struct {
 	typeName *TypeName
 }
 
+func NewEmbeddedField(star bool, typeName *TypeName) *EmbeddedField {
+	return &EmbeddedField{star: star, typeName: typeName}
+}
+
 func (s *EmbeddedField) Star() bool {
 	return s.star
 }

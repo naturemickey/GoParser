@@ -40,7 +40,7 @@ func (s *RecvStmt) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
 	if s.expressionList != nil {
 		cb.appendNode(s.expressionList).appendString(" = ")
-	} else {
+	} else if s.identifierList != nil {
 		cb.appendNode(s.identifierList).appendString(" := ")
 	}
 	cb.appendNode(s.recvExpr)

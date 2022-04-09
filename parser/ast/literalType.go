@@ -11,6 +11,10 @@ type LiteralType struct {
 	typeName    *TypeName
 }
 
+func NewLiteralType(structType *StructType, arrayType *ArrayType, elementType ElementType, sliceType *SliceType, mapType *MapType, typeName *TypeName) *LiteralType {
+	return &LiteralType{structType: structType, arrayType: arrayType, elementType: elementType, sliceType: sliceType, mapType: mapType, typeName: typeName}
+}
+
 func (s *LiteralType) StructType() *StructType {
 	return s.structType
 }

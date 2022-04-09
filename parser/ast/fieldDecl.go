@@ -10,6 +10,10 @@ type FieldDecl struct {
 	tag string
 }
 
+func NewFieldDecl(identifierList *IdentifierList, type_ *Type_, embeddedField *EmbeddedField, tag string) *FieldDecl {
+	return &FieldDecl{identifierList: identifierList, type_: type_, embeddedField: embeddedField, tag: tag}
+}
+
 func (s *FieldDecl) IdentifierList() *IdentifierList {
 	return s.identifierList
 }

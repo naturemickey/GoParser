@@ -7,6 +7,10 @@ type QualifiedIdent struct {
 	id2 string
 }
 
+func NewQualifiedIdent(id1 string, id2 string) *QualifiedIdent {
+	return &QualifiedIdent{id1: id1, id2: id2}
+}
+
 func (s *QualifiedIdent) Id1() string {
 	return s.id1
 }

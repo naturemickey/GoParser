@@ -3,28 +3,76 @@ package main
 import (
 	"GoParser/parser"
 	"GoParser/parser/antlr4"
+	"GoParser/parser/ast"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"io/ioutil"
+	"strings"
 )
+import "go/format"
 
 func main() {
-	file, err := ioutil.ReadFile("./test_examples/anonymousMethods_go")
-	if err != nil {
-		panic(err.Error())
+	path := "./test_examples/"
+	dir, err2 := ioutil.ReadDir(path)
+	if err2 != nil {
+		println(err2.Error())
 	}
-	input := antlr.NewInputStream(string(file))
-	lexer := antlr4.NewGoLexer(input)
-	stream := antlr.NewCommonTokenStream(lexer, 0)
-	p := antlr4.NewGoParser(stream)
-	p.SetErrorHandler(antlr.NewBailErrorStrategy())
-	// p.SetErrorHandler(antlr.NewDefaultErrorStrategy())
-	// p.AddErrorListener(antlr.NewDiagnosticErrorListener(false))
-	// p.BuildParseTrees = true
-	tree := p.SourceFile()
+	whiteList := []string{}
+	for _, fileInfo := range dir {
+		if strings.HasSuffix(fileInfo.Name(), "_go") {
 
-	visitor := &parser.GoParserVisitorImpl{}
+			if len(whiteList) > 0 {
+				var in bool = false
+				for _, s := range whiteList {
+					if s == fileInfo.Name() {
+						in = true
+						break
+					}
+				}
+				if !in {
+					continue
+				}
+			}
 
-	accept := tree.Accept(visitor)
+			println("=======================================================================================")
+			filePath := path + fileInfo.Name()
 
-	println(accept)
+			println("开始处理文件：", filePath)
+
+			file, err := ioutil.ReadFile(filePath)
+			if err != nil {
+				panic(err.Error())
+			}
+			originContent := string(file)
+
+			println("原始文件：\n", originContent)
+
+			input := antlr.NewInputStream(originContent)
+			lexer := antlr4.NewGoLexer(input)
+			stream := antlr.NewCommonTokenStream(lexer, 0)
+			p := antlr4.NewGoParser(stream)
+			p.SetErrorHandler(antlr.NewBailErrorStrategy())
+			// p.SetErrorHandler(antlr.NewDefaultErrorStrategy())
+			// p.AddErrorListener(antlr.NewDiagnosticErrorListener(false))
+			// p.BuildParseTrees = true
+			tree := p.SourceFile()
+
+			visitor := &parser.GoParserVisitorImpl{}
+
+			accept := tree.Accept(visitor).(ast.INode)
+
+			content := accept.String()
+
+			println("------------------------")
+			println("解析后：\n", content)
+
+			bs, err := format.Source([]byte(content))
+			if err != nil {
+				panic(err)
+			}
+
+			println("------------------------")
+			println("gofmt后：\n", string(bs))
+			println("=======================================================================================")
+		}
+	}
 }

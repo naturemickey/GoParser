@@ -6,6 +6,10 @@ type TypeAssertion struct {
 	type_ *Type_
 }
 
+func NewTypeAssertion(type_ *Type_) *TypeAssertion {
+	return &TypeAssertion{type_: type_}
+}
+
 func (s *TypeAssertion) Type_() *Type_ {
 	return s.type_
 }

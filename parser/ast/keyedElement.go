@@ -7,6 +7,10 @@ type KeyedElement struct {
 	element Element
 }
 
+func NewKeyedElement(key Key, element Element) *KeyedElement {
+	return &KeyedElement{key: key, element: element}
+}
+
 func (s *KeyedElement) Key() Key {
 	return s.key
 }

@@ -7,6 +7,26 @@ type CompositeLit struct {
 	literalValue *LiteralValue
 }
 
+func NewCompositeLit(literalType *LiteralType, literalValue *LiteralValue) *CompositeLit {
+	return &CompositeLit{literalType: literalType, literalValue: literalValue}
+}
+
+func (s *CompositeLit) LiteralType() *LiteralType {
+	return s.literalType
+}
+
+func (s *CompositeLit) SetLiteralType(literalType *LiteralType) {
+	s.literalType = literalType
+}
+
+func (s *CompositeLit) LiteralValue() *LiteralValue {
+	return s.literalValue
+}
+
+func (s *CompositeLit) SetLiteralValue(literalValue *LiteralValue) {
+	s.literalValue = literalValue
+}
+
 func (s *CompositeLit) _Literal_() {
 	//TODO implement me
 	panic("implement me")

@@ -5,6 +5,10 @@ type LiteralValue struct {
 	elementList *ElementList
 }
 
+func NewLiteralValue(elementList *ElementList) *LiteralValue {
+	return &LiteralValue{elementList: elementList}
+}
+
 func (s *LiteralValue) _Element_() {
 	//TODO implement me
 	panic("implement me")

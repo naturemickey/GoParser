@@ -8,6 +8,10 @@ type Slice struct {
 	expression3 *Expression
 }
 
+func NewSlice(expression1 *Expression, expression2 *Expression, expression3 *Expression) *Slice {
+	return &Slice{expression1: expression1, expression2: expression2, expression3: expression3}
+}
+
 func (s *Slice) Expression1() *Expression {
 	return s.expression1
 }
@@ -34,6 +38,7 @@ func (s *Slice) SetExpression3(expression3 *Expression) {
 
 func (s *Slice) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
+	cb.appendString("[")
 	if s.expression1 != nil {
 		cb.appendNode(s.expression1)
 	}
@@ -45,6 +50,7 @@ func (s *Slice) codeBuilder() *CodeBuilder {
 		cb.appendString(":")
 		cb.appendNode(s.expression3)
 	}
+	cb.appendString("]")
 	return cb
 }
 

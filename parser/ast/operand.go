@@ -8,6 +8,10 @@ type Operand struct {
 	expression  *Expression
 }
 
+func NewOperand(literal Literal, operandName string, expression *Expression) *Operand {
+	return &Operand{literal: literal, operandName: operandName, expression: expression}
+}
+
 func (s *Operand) Literal() Literal {
 	return s.literal
 }

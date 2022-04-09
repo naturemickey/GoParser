@@ -34,7 +34,9 @@ func (s *Parameters) codeBuilder() *CodeBuilder {
 	for _, decl := range s.parameterDecls {
 		cb.appendNode(decl).appendString(", ")
 	}
-	cb.deleteLast()
+	if len(s.parameterDecls) > 0 {
+		cb.deleteLast()
+	}
 
 	cb.appendString(")")
 	return cb

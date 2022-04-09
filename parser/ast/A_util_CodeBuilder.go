@@ -1,6 +1,9 @@
 package ast
 
-import "strings"
+import (
+	"reflect"
+	"strings"
+)
 
 type CodeBuilder struct {
 	ss []string
@@ -16,7 +19,7 @@ func (cb *CodeBuilder) appendString(s string) *CodeBuilder {
 }
 
 func (cb *CodeBuilder) appendNode(n INode) *CodeBuilder {
-	if n == nil {
+	if n == nil || reflect.ValueOf(n).IsNil() {
 		return cb
 	}
 	for _, s := range n.codeBuilder().ss {

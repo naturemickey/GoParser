@@ -6,6 +6,10 @@ type StructType struct {
 	fieldDecls []*FieldDecl
 }
 
+func NewStructType(fieldDecls []*FieldDecl) *StructType {
+	return &StructType{fieldDecls: fieldDecls}
+}
+
 func (s *StructType) FieldDecls() []*FieldDecl {
 	return s.fieldDecls
 }

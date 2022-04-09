@@ -6,6 +6,10 @@ type Index struct {
 	expression *Expression
 }
 
+func NewIndex(expression *Expression) *Index {
+	return &Index{expression: expression}
+}
+
 func (s *Index) Expression() *Expression {
 	return s.expression
 }

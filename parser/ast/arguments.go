@@ -8,6 +8,10 @@ type Arguments struct {
 	ellipsis       bool
 }
 
+func NewArguments(expressionList *ExpressionList, nonNamedType *NonNamedType, ellipsis bool) *Arguments {
+	return &Arguments{expressionList: expressionList, nonNamedType: nonNamedType, ellipsis: ellipsis}
+}
+
 func (s *Arguments) ExpressionList() *ExpressionList {
 	return s.expressionList
 }

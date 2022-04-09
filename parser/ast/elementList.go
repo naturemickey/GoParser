@@ -3,20 +3,24 @@ package ast
 type ElementList struct {
 	BaseNode
 
-	keyedElement []*KeyedElement
+	keyedElements []*KeyedElement
 }
 
-func (s *ElementList) KeyedElement() []*KeyedElement {
-	return s.keyedElement
+func NewElementList(keyedElements []*KeyedElement) *ElementList {
+	return &ElementList{keyedElements: keyedElements}
 }
 
-func (s *ElementList) SetKeyedElement(keyedElement []*KeyedElement) {
-	s.keyedElement = keyedElement
+func (s *ElementList) KeyedElements() []*KeyedElement {
+	return s.keyedElements
+}
+
+func (s *ElementList) SetKeyedElements(keyedElements []*KeyedElement) {
+	s.keyedElements = keyedElements
 }
 
 func (s *ElementList) codeBuilder() *CodeBuilder {
 	cb := NewCodeBuilder()
-	for _, element := range s.keyedElement {
+	for _, element := range s.keyedElements {
 		cb.appendNode(element).appendString(", ")
 	}
 	cb.deleteLast()

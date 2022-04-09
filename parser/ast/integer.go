@@ -7,6 +7,10 @@ type Integer struct {
 	literal string
 }
 
+func NewInteger(intType IntegerLitType, literal string) *Integer {
+	return &Integer{intType: intType, literal: literal}
+}
+
 func (s *Integer) IntType() IntegerLitType {
 	return s.intType
 }

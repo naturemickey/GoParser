@@ -38,9 +38,11 @@ func (s *TypeDecl) codeBuilder() *CodeBuilder {
 	if len(s.typeSpecs) == 1 {
 		cb.appendNode(s.typeSpecs[0])
 	} else {
+		cb.appendString("(").newLine()
 		for _, spec := range s.typeSpecs {
 			cb.tab().appendNode(spec).newLine()
 		}
+		cb.appendString(")")
 	}
 	return cb
 }

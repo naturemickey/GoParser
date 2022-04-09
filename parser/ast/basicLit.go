@@ -9,6 +9,10 @@ type BasicLit struct {
 	float   string
 }
 
+func NewBasicLit(isNil bool, integer *Integer, string_ string, float string) *BasicLit {
+	return &BasicLit{isNil: isNil, integer: integer, string_: string_, float: float}
+}
+
 func (s *BasicLit) IsNil() bool {
 	return s.isNil
 }

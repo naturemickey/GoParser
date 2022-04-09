@@ -6,6 +6,18 @@ type Eos struct {
 	literal string
 }
 
+func NewEos(literal string) *Eos {
+	return &Eos{literal: literal}
+}
+
+func (s *Eos) Literal() string {
+	return s.literal
+}
+
+func (s *Eos) SetLiteral(literal string) {
+	s.literal = literal
+}
+
 func (s *Eos) codeBuilder() *CodeBuilder {
 	return NewCodeBuilder().appendString(s.literal)
 }

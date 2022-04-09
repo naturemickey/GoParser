@@ -7,6 +7,10 @@ type FunctionLit struct {
 	block     *Block
 }
 
+func NewFunctionLit(signature *Signature, block *Block) *FunctionLit {
+	return &FunctionLit{signature: signature, block: block}
+}
+
 func (s *FunctionLit) Signature() *Signature {
 	return s.signature
 }
