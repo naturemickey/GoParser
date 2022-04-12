@@ -19,6 +19,12 @@ func (s *Scope) NewChildScope() *Scope {
 	return child
 }
 
+func (s *Scope) forNames(f func(k string, v *Name)) {
+	for key, val := range s.names {
+		f(key, val)
+	}
+}
+
 func (s *Scope) popSelf() *Scope {
 	if s.parent != nil {
 		return s.parent

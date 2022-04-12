@@ -35,4 +35,5 @@ const (
 	FUNCATION NameType = iota
 	METHOD
 	VARIABLE
+	TYPE
 )
