@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func WalkSourceFile(tree ast.SourceFile) {
+func WalkSourceFile(tree *ast.SourceFile) {
 	scope := NewScopeRoot()
 	for _, fmd := range tree.FunctionOrMethodOrDeclarations() {
 		switch child := fmd.(type) {
@@ -335,11 +335,128 @@ func WalkPrimaryExpr(scope *Scope, expr *ast.PrimaryExpr, isGo bool) {
 }
 
 func WalkOperand(scope *Scope, stmt *ast.Operand, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	WalkLiteral(scope, stmt.Literal(), isGo)
 
+	if isGo {
+		name := stmt.OperandName()
+		n := scope.GetNameByName(name)
+		if n != nil {
+			if n.TypeLiteral() == "context.Context" {
+				panic("在协程里用了外部的context.Context")
+			}
+			if n.tree != nil {
+				switch node := n.tree.(type) {
+				case *ast.ExpressionList:
+					WalkExpressionList(scope, node, isGo)
+				case *ast.Expression:
+					WalkExpression(scope, node, isGo)
+				case *ast.FunctionDecl:
+					WalkFunctionDecl(scope, node, isGo)
+				}
+			}
+		}
+	}
+	WalkExpression(scope, stmt.Expression(), isGo)
+}
+
+func WalkLiteral(scope *Scope, stmt ast.Literal, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	switch tree := stmt.(type) {
+	case *ast.BasicLit:
+		WalkBasicLit(scope, tree, isGo)
+	case *ast.CompositeLit:
+		WalkCompositeLit(scope, tree, isGo)
+	case *ast.FunctionLit:
+		WalkFunctionLit(scope, tree, isGo)
+	}
+}
+
+func WalkBasicLit(scope *Scope, stmt *ast.BasicLit, isGo bool) {
+	// 看起来不用搞这个函数
+}
+
+func WalkFunctionLit(scope *Scope, stmt *ast.FunctionLit, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	scope = scope.NewChildScope()
+	WalkSignature(scope, stmt.Signature(), isGo)
+	WalkBlock(scope, stmt.Block(), false, isGo)
+}
+
+func WalkCompositeLit(scope *Scope, stmt *ast.CompositeLit, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	WalkLiteralType(scope, stmt.LiteralType(), isGo)
+	WalkLiteralValue(scope, stmt.LiteralValue(), isGo)
+}
+
+func WalkLiteralType(scope *Scope, stmt *ast.LiteralType, isGo bool) {
+	// 看起来不用搞这个函数
+}
+
+func WalkLiteralValue(scope *Scope, stmt *ast.LiteralValue, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	WalkElementList(scope, stmt.ElementList(), isGo)
+}
+
+func WalkElementList(scope *Scope, stmt *ast.ElementList, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	for _, element := range stmt.KeyedElements() {
+		WalkKeyedElement(scope, element, isGo)
+	}
+}
+
+func WalkKeyedElement(scope *Scope, stmt *ast.KeyedElement, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	if stmt.Key() != nil && !reflect.ValueOf(stmt.Key()).IsNil() {
+		switch key := stmt.Key().(type) {
+		case *ast.Expression:
+			WalkExpression(scope, key, isGo)
+		case *ast.LiteralValue:
+			WalkLiteralValue(scope, key, isGo)
+		default:
+			panic("impossible")
+		}
+	}
+	switch element := stmt.Element().(type) {
+	case *ast.Expression:
+		WalkExpression(scope, element, isGo)
+	case *ast.LiteralValue:
+		WalkLiteralValue(scope, element, isGo)
+	}
 }
 
 func WalkConversion(scope *Scope, stmt *ast.Conversion, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
+	WalkExpression(scope, stmt.Expression(), isGo)
+}
 
+func WalkNonNamedType(scope *Scope, stmt *ast.NonNamedType, isGo bool) {
+	if stmt == nil {
+		return
+	}
+	WalkTypeLit(scope, stmt.TypeLit(), isGo)
+	WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
+}
+
+func WalkTypeLit(scope *Scope, stmt ast.TypeLit, isGo bool) {
+	// todo
 }
 
 func WalkMethodExpr(scope *Scope, stmt *ast.MethodExpr, isGo bool) {
@@ -359,7 +476,11 @@ func WalkTypeAssertion(scope *Scope, stmt *ast.TypeAssertion, isGo bool) {
 }
 
 func WalkArguments(scope *Scope, stmt *ast.Arguments, isGo bool) {
-
+	if stmt == nil {
+		return
+	}
+	WalkExpressionList(scope, stmt.ExpressionList(), isGo)
+	WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
 }
 
 func WalkIfStmt(scope *Scope, stmt *ast.IfStmt, isGo bool) {
@@ -372,13 +493,33 @@ func WalkIfStmt(scope *Scope, stmt *ast.IfStmt, isGo bool) {
 }
 
 func WalkShortValDecl(scope *Scope, shortValDecl *ast.ShortValDecl, isGo bool) {
+	if shortValDecl == nil {
+		return
+	}
+	for i, name := range shortValDecl.IdentifierList().Identifiers() {
+		tree := shortValDecl.ExpressionList().Expressions()[i]
+		type_ := VARIABLE
+		typeLiteral := tree.String()
+		scope.AddName(name, NewName(name, tree, type_, typeLiteral))
 
+		WalkExpression(scope, tree, isGo)
+	}
 }
 
 func WalkExpressionList(scope *Scope, expressionList *ast.ExpressionList, isGo bool) {
-
+	if expressionList == nil {
+		return
+	}
+	for _, expression := range expressionList.Expressions() {
+		WalkExpression(scope, expression, isGo)
+	}
 }
 
 func WalkExpression(scope *Scope, expression *ast.Expression, isGo bool) {
-
+	if expression == nil {
+		return
+	}
+	WalkPrimaryExpr(scope, expression.PrimaryExpr(), isGo)
+	WalkExpression(scope, expression.Expression(), isGo)
+	WalkExpression(scope, expression.Expression2(), isGo)
 }

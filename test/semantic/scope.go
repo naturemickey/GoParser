@@ -6,7 +6,9 @@ type Scope struct {
 }
 
 func NewScopeRoot() *Scope {
-	return new(Scope)
+	scope := new(Scope)
+	scope.names = map[string]*Name{}
+	return scope
 }
 
 func (s *Scope) AddName(name string, val *Name) {
@@ -16,6 +18,7 @@ func (s *Scope) AddName(name string, val *Name) {
 func (s *Scope) NewChildScope() *Scope {
 	child := new(Scope)
 	child.parent = s
+	child.names = map[string]*Name{}
 	return child
 }
 
@@ -34,4 +37,12 @@ func (s *Scope) popSelf() *Scope {
 
 func (s *Scope) isRoot() bool {
 	return s.parent == nil
+}
+
+func (s *Scope) GetNameByName(name string) *Name {
+	n := s.names[name]
+	if n == nil && s.parent != nil {
+		n = s.parent.GetNameByName(name)
+	}
+	return n
 }
