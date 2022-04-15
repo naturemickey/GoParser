@@ -4,27 +4,14 @@ import (
 	"GoParser/parser"
 	"GoParser/parser/antlr4"
 	"GoParser/parser/ast"
+	"GoParser/test/utils"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"io/ioutil"
 	"strings"
 )
 
 func main() {
-	parse_dir("/Users/mickey/git/mis-backend/")
-}
-
-func parse_dir(path string) {
-	dir, err2 := ioutil.ReadDir(path)
-	if err2 != nil {
-		println(err2.Error())
-	}
-	for _, fileInfo := range dir {
-		if fileInfo.IsDir() {
-			parse_dir(path + fileInfo.Name() + "/")
-		} else {
-			parse_go_file(path + fileInfo.Name())
-		}
-	}
+	utils.WalkDir("/Users/mickey/git/mis-backend/", parse_go_file)
 }
 
 func parse_go_file(filePath string) {

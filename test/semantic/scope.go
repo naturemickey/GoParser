@@ -1,8 +1,9 @@
 package semantic
 
 type Scope struct {
-	names  map[string]*Name
-	parent *Scope
+	names   map[string]*Name
+	parent  *Scope
+	goLevel int
 }
 
 func NewScopeRoot() *Scope {
@@ -15,10 +16,15 @@ func (s *Scope) AddName(name string, val *Name) {
 	s.names[name] = val
 }
 
-func (s *Scope) NewChildScope() *Scope {
+func (s *Scope) NewChildScope(addGoLevel bool) *Scope {
 	child := new(Scope)
 	child.parent = s
 	child.names = map[string]*Name{}
+	if addGoLevel {
+		child.goLevel = s.goLevel + 1
+	} else {
+		child.goLevel = s.goLevel
+	}
 	return child
 }
 
@@ -39,10 +45,11 @@ func (s *Scope) isRoot() bool {
 	return s.parent == nil
 }
 
-func (s *Scope) GetNameByName(name string) *Name {
+func (s *Scope) GetNameByName(name string) (*Name, int) {
 	n := s.names[name]
+	goLevel := s.goLevel
 	if n == nil && s.parent != nil {
-		n = s.parent.GetNameByName(name)
+		n, goLevel = s.parent.GetNameByName(name)
 	}
-	return n
+	return n, goLevel
 }
