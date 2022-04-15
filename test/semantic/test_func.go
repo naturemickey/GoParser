@@ -9,7 +9,7 @@ import (
 func WaklTest(path string) {
 	defer fff(path)
 	tree := parser.ParseGoFile(path)
-	WalkSourceFile(tree.(*ast.SourceFile))
+	(&Walker{}).WalkSourceFile(tree.(*ast.SourceFile))
 }
 
 func fff(path string) {

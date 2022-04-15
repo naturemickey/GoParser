@@ -5,13 +5,23 @@ import (
 	"reflect"
 )
 
-func WalkSourceFile(tree *ast.SourceFile) {
-	goset = map[*ast.Operand]struct{}{}
+var o struct{}
+
+type Walker struct {
+	goset map[*ast.Operand]struct{}
+}
+
+func (w *Walker) WalkSourceFile(tree *ast.SourceFile) {
+	if w.goset != nil {
+		panic("你用错了")
+	} else {
+		w.goset = map[*ast.Operand]struct{}{}
+	}
 	scope := NewScopeRoot()
 	for _, fmd := range tree.FunctionOrMethodOrDeclarations() {
 		switch child := fmd.(type) {
 		case *ast.TypeDecl:
-			WalkTypeDecl(scope, child, false)
+			w.WalkTypeDecl(scope, child, false)
 		}
 	}
 	for _, fmd := range tree.FunctionOrMethodOrDeclarations() {
@@ -30,21 +40,21 @@ func WalkSourceFile(tree *ast.SourceFile) {
 			scope.AddName(name, NewName(name, tree, type_, typeLiteral))
 		//case ast.Declaration:
 		case *ast.ConstDecl:
-			WalkConstDecl(scope, child, false)
+			w.WalkConstDecl(scope, child, false)
 		case *ast.VarDecl:
-			WalkVarDecl(scope, child, false)
+			w.WalkVarDecl(scope, child, false)
 		}
 	}
 	scope.forNames(func(id string, name *Name) {
 		if name.Type_() == FUNCATION {
-			WalkFunctionDecl(scope, name.tree.(*ast.FunctionDecl), false)
+			w.WalkFunctionDecl(scope, name.tree.(*ast.FunctionDecl), false)
 		} else if name.Type_() == METHOD {
-			WalkMethodDecl(scope, name.tree.(*ast.MethodDecl), false)
+			w.WalkMethodDecl(scope, name.tree.(*ast.MethodDecl), false)
 		}
 	})
 }
 
-func WalkTypeDecl(scope *Scope, typeDecl *ast.TypeDecl, isGo bool) {
+func (w *Walker) WalkTypeDecl(scope *Scope, typeDecl *ast.TypeDecl, isGo bool) {
 	for _, typeSpec := range typeDecl.TypeSpecs() {
 		name := typeSpec.Id()
 		tree := typeSpec
@@ -54,7 +64,7 @@ func WalkTypeDecl(scope *Scope, typeDecl *ast.TypeDecl, isGo bool) {
 	}
 }
 
-func WalkConstDecl(scope *Scope, constDecl *ast.ConstDecl, isGo bool) {
+func (w *Walker) WalkConstDecl(scope *Scope, constDecl *ast.ConstDecl, isGo bool) {
 	type_ := VARIABLE
 	for _, constSpec := range constDecl.ConstSpecs() {
 		var typeLiteral string
@@ -70,7 +80,7 @@ func WalkConstDecl(scope *Scope, constDecl *ast.ConstDecl, isGo bool) {
 	}
 }
 
-func WalkVarDecl(scope *Scope, varDecl *ast.VarDecl, isGo bool) {
+func (w *Walker) WalkVarDecl(scope *Scope, varDecl *ast.VarDecl, isGo bool) {
 	type_ := VARIABLE
 	for _, constSpec := range varDecl.VarSpecs() {
 		var typeLiteral string
@@ -86,26 +96,26 @@ func WalkVarDecl(scope *Scope, varDecl *ast.VarDecl, isGo bool) {
 	}
 }
 
-func WalkFunctionDecl(scope *Scope, functionDecl *ast.FunctionDecl, isGo bool) {
+func (w *Walker) WalkFunctionDecl(scope *Scope, functionDecl *ast.FunctionDecl, isGo bool) {
 	scope = scope.NewChildScope(false)
 
-	WalkSignature(scope, functionDecl.Signature(), isGo)
-	WalkBlock(scope, functionDecl.Block(), false, isGo)
+	w.WalkSignature(scope, functionDecl.Signature(), isGo)
+	w.WalkBlock(scope, functionDecl.Block(), false, isGo)
 }
 
-func WalkMethodDecl(scope *Scope, methodDecl *ast.MethodDecl, isGo bool) {
+func (w *Walker) WalkMethodDecl(scope *Scope, methodDecl *ast.MethodDecl, isGo bool) {
 	scope = scope.NewChildScope(false)
 
-	WalkParameters(scope, methodDecl.Receiver().(*ast.Parameters), isGo)
-	WalkSignature(scope, methodDecl.Signature(), isGo)
-	WalkBlock(scope, methodDecl.Block(), false, isGo)
+	w.WalkParameters(scope, methodDecl.Receiver().(*ast.Parameters), isGo)
+	w.WalkSignature(scope, methodDecl.Signature(), isGo)
+	w.WalkBlock(scope, methodDecl.Block(), false, isGo)
 }
 
-func WalkSignature(scope *Scope, signature *ast.Signature, isGo bool) {
-	WalkParameters(scope, signature.Parameters(), isGo)
+func (w *Walker) WalkSignature(scope *Scope, signature *ast.Signature, isGo bool) {
+	w.WalkParameters(scope, signature.Parameters(), isGo)
 }
 
-func WalkParameters(scope *Scope, parameters *ast.Parameters, isGo bool) {
+func (w *Walker) WalkParameters(scope *Scope, parameters *ast.Parameters, isGo bool) {
 	if parameters == nil {
 		return
 	}
@@ -122,7 +132,7 @@ func WalkParameters(scope *Scope, parameters *ast.Parameters, isGo bool) {
 		}
 	}
 }
-func WalkBlock(scope *Scope, block *ast.Block, newScope bool, isGo bool) {
+func (w *Walker) WalkBlock(scope *Scope, block *ast.Block, newScope bool, isGo bool) {
 	if block == nil {
 		return
 	}
@@ -131,236 +141,233 @@ func WalkBlock(scope *Scope, block *ast.Block, newScope bool, isGo bool) {
 	}
 	if block.StatementList() != nil {
 		for _, statement := range block.StatementList().Statements() {
-			WalkStatement(scope, statement, isGo)
+			w.WalkStatement(scope, statement, isGo)
 		}
 	}
 }
 
-func WalkStatement(scope *Scope, statement ast.Statement, isGo bool) {
+func (w *Walker) WalkStatement(scope *Scope, statement ast.Statement, isGo bool) {
 	if statement == nil || reflect.ValueOf(statement).IsNil() {
 		return
 	}
 	switch stmt := statement.(type) {
 	case *ast.ConstDecl:
-		WalkConstDecl(scope, stmt, isGo)
+		w.WalkConstDecl(scope, stmt, isGo)
 	case *ast.TypeDecl:
-		WalkTypeDecl(scope, stmt, isGo)
+		w.WalkTypeDecl(scope, stmt, isGo)
 	case *ast.VarDecl:
-		WalkVarDecl(scope, stmt, isGo)
+		w.WalkVarDecl(scope, stmt, isGo)
 	case *ast.LabeledStmt:
-		WalkStatement(scope, stmt.Statement(), isGo)
+		w.WalkStatement(scope, stmt.Statement(), isGo)
 	case *ast.SendStmt:
-		WalkExpression(scope, stmt.Channel(), isGo)
-		WalkExpression(scope, stmt.Expression(), isGo)
+		w.WalkExpression(scope, stmt.Channel(), isGo)
+		w.WalkExpression(scope, stmt.Expression(), isGo)
 	case *ast.IncDecStmt:
-		WalkExpression(scope, stmt.Expression(), isGo)
+		w.WalkExpression(scope, stmt.Expression(), isGo)
 	case *ast.Assignment:
-		WalkExpressionList(scope, stmt.ExpressionListLeft(), isGo)
-		WalkExpressionList(scope, stmt.ExpressionListRight(), isGo)
+		w.WalkExpressionList(scope, stmt.ExpressionListLeft(), isGo)
+		w.WalkExpressionList(scope, stmt.ExpressionListRight(), isGo)
 	case *ast.Expression:
-		WalkExpression(scope, stmt, isGo)
+		w.WalkExpression(scope, stmt, isGo)
 	case *ast.ShortValDecl:
-		WalkShortValDecl(scope, stmt, isGo)
+		w.WalkShortValDecl(scope, stmt, isGo)
 	case *ast.GoStmt:
-		WalkExpression(scope.NewChildScope(true), stmt.Expression(), true)
+		w.WalkExpression(scope.NewChildScope(true), stmt.Expression(), true)
 	case *ast.ReturnStmt:
-		WalkExpressionList(scope, stmt.ExpressionList(), isGo)
+		w.WalkExpressionList(scope, stmt.ExpressionList(), isGo)
 	case *ast.BreakStmt: // don't need to do anything
 	case *ast.ContinueStmt: // don't need to do anything
 	case *ast.GotoStmt: // don't need to do anything
 	case *ast.FallThroughStmt: // don't need to do anything
 	case *ast.Block:
-		WalkBlock(scope, stmt, true, isGo)
+		w.WalkBlock(scope, stmt, true, isGo)
 	case *ast.IfStmt:
-		WalkIfStmt(scope, stmt, isGo)
+		w.WalkIfStmt(scope, stmt, isGo)
 	case *ast.ExprSwitchStmt:
 		newScope := scope.NewChildScope(false)
-		WalkStatement(newScope, stmt.SimpleStmt(), isGo)
-		WalkExpression(newScope, stmt.Expression(), isGo)
+		w.WalkStatement(newScope, stmt.SimpleStmt(), isGo)
+		w.WalkExpression(newScope, stmt.Expression(), isGo)
 		for _, caseClause := range stmt.ExprCaseClauses() {
-			WalkExprCaseClause(scope, caseClause, isGo)
+			w.WalkExprCaseClause(scope, caseClause, isGo)
 		}
 	case *ast.TypeSwitchStmt:
 		newScope := scope.NewChildScope(false)
-		WalkStatement(newScope, stmt.SimpleStmt(), isGo)
-		WalkTypeSwitchGuard(newScope, stmt.TypeSwitchGuard(), isGo)
+		w.WalkStatement(newScope, stmt.SimpleStmt(), isGo)
+		w.WalkTypeSwitchGuard(newScope, stmt.TypeSwitchGuard(), isGo)
 		for _, typeCaseClause := range stmt.TypeCaseClauses() {
-			WalkTypeCaseClause(scope, typeCaseClause, isGo)
+			w.WalkTypeCaseClause(scope, typeCaseClause, isGo)
 		}
 	case *ast.SelectStmt:
 		for _, clause := range stmt.CommClauses() {
-			WalkCommClause(scope, clause, isGo)
+			w.WalkCommClause(scope, clause, isGo)
 		}
 	case *ast.ForStmt:
 		newScope := scope.NewChildScope(false)
-		WalkExpression(newScope, stmt.Expression(), isGo)
-		WalkForClause(newScope, stmt.ForClause(), isGo)
-		WalkRangeClause(newScope, stmt.RangeClause(), isGo)
-		WalkBlock(newScope, stmt.Block(), false, isGo)
+		w.WalkExpression(newScope, stmt.Expression(), isGo)
+		w.WalkForClause(newScope, stmt.ForClause(), isGo)
+		w.WalkRangeClause(newScope, stmt.RangeClause(), isGo)
+		w.WalkBlock(newScope, stmt.Block(), false, isGo)
 	case *ast.DeferStmt:
-		WalkExpression(scope, stmt.Expression(), isGo)
+		w.WalkExpression(scope, stmt.Expression(), isGo)
 	default:
 		panic(statement.String())
 	}
 }
 
-func WalkRangeClause(scope *Scope, rangeClause *ast.RangeClause, isGo bool) {
+func (w *Walker) WalkRangeClause(scope *Scope, rangeClause *ast.RangeClause, isGo bool) {
 	if rangeClause == nil {
 		return
 	}
-	WalkExpressionList(scope, rangeClause.ExpressionList(), isGo)
+	w.WalkExpressionList(scope, rangeClause.ExpressionList(), isGo)
 	if rangeClause.IdentifierList() != nil {
 		for _, id := range rangeClause.IdentifierList().Identifiers() {
 			scope.AddName(id, NewName(id, nil, VARIABLE, ""))
 		}
 	}
-	WalkExpression(scope, rangeClause.Expression(), isGo)
+	w.WalkExpression(scope, rangeClause.Expression(), isGo)
 }
 
-func WalkForClause(scope *Scope, forClause *ast.ForClause, isGo bool) {
+func (w *Walker) WalkForClause(scope *Scope, forClause *ast.ForClause, isGo bool) {
 	if forClause == nil {
 		return
 	}
-	WalkStatement(scope, forClause.InitStmt(), isGo)
-	WalkExpression(scope, forClause.Expression(), isGo)
-	WalkStatement(scope, forClause.PostStmt(), isGo)
+	w.WalkStatement(scope, forClause.InitStmt(), isGo)
+	w.WalkExpression(scope, forClause.Expression(), isGo)
+	w.WalkStatement(scope, forClause.PostStmt(), isGo)
 }
 
-func WalkCommClause(scope *Scope, commClause *ast.CommClause, isGo bool) {
+func (w *Walker) WalkCommClause(scope *Scope, commClause *ast.CommClause, isGo bool) {
 	if commClause == nil {
 		return
 	}
 	scope = scope.NewChildScope(false)
-	WalkCommCase(scope, commClause.CommCase(), isGo)
-	WalkStatementList(scope, commClause.StatementList(), isGo)
+	w.WalkCommCase(scope, commClause.CommCase(), isGo)
+	w.WalkStatementList(scope, commClause.StatementList(), isGo)
 }
 
-func WalkStatementList(scope *Scope, statementList *ast.StatementList, isGo bool) {
+func (w *Walker) WalkStatementList(scope *Scope, statementList *ast.StatementList, isGo bool) {
 	if statementList == nil {
 		return
 	}
 	for _, statement := range statementList.Statements() {
-		WalkStatement(scope, statement, isGo)
+		w.WalkStatement(scope, statement, isGo)
 	}
 }
 
-func WalkCommCase(scope *Scope, commCase *ast.CommCase, isGo bool) {
+func (w *Walker) WalkCommCase(scope *Scope, commCase *ast.CommCase, isGo bool) {
 	if commCase == nil {
 		return
 	}
-	WalkSendStmt(scope, commCase.SendStmt(), isGo)
-	WalkRecvStmt(scope, commCase.RecvStmt(), isGo)
+	w.WalkSendStmt(scope, commCase.SendStmt(), isGo)
+	w.WalkRecvStmt(scope, commCase.RecvStmt(), isGo)
 }
 
-func WalkSendStmt(scope *Scope, stmt *ast.SendStmt, isGo bool) {
+func (w *Walker) WalkSendStmt(scope *Scope, stmt *ast.SendStmt, isGo bool) {
 	if stmt == nil {
 		return
 	}
-	WalkExpression(scope, stmt.Channel(), isGo)
-	WalkExpression(scope, stmt.Expression(), isGo)
+	w.WalkExpression(scope, stmt.Channel(), isGo)
+	w.WalkExpression(scope, stmt.Expression(), isGo)
 }
 
-func WalkRecvStmt(scope *Scope, stmt *ast.RecvStmt, isGo bool) {
+func (w *Walker) WalkRecvStmt(scope *Scope, stmt *ast.RecvStmt, isGo bool) {
 	if stmt == nil {
 		return
 	}
-	WalkExpressionList(scope, stmt.ExpressionList(), isGo)
+	w.WalkExpressionList(scope, stmt.ExpressionList(), isGo)
 	if stmt.IdentifierList() != nil {
 		for _, id := range stmt.IdentifierList().Identifiers() {
 			scope.AddName(id, NewName(id, nil, VARIABLE, ""))
 		}
 	}
-	WalkExpression(scope, stmt.RecvExpr(), isGo)
+	w.WalkExpression(scope, stmt.RecvExpr(), isGo)
 }
 
-func WalkExprCaseClause(scope *Scope, exprCaseClause *ast.ExprCaseClause, isGo bool) {
+func (w *Walker) WalkExprCaseClause(scope *Scope, exprCaseClause *ast.ExprCaseClause, isGo bool) {
 	if exprCaseClause == nil {
 		return
 	}
 	scope = scope.NewChildScope(false)
-	WalkExprSwitchCase(scope, exprCaseClause.ExprSwitchCase(), isGo)
-	WalkStatementList(scope, exprCaseClause.StatementList(), isGo)
+	w.WalkExprSwitchCase(scope, exprCaseClause.ExprSwitchCase(), isGo)
+	w.WalkStatementList(scope, exprCaseClause.StatementList(), isGo)
 }
 
-func WalkExprSwitchCase(scope *Scope, switchCase *ast.ExprSwitchCase, isGo bool) {
+func (w *Walker) WalkExprSwitchCase(scope *Scope, switchCase *ast.ExprSwitchCase, isGo bool) {
 	if switchCase == nil {
 		return
 	}
-	WalkExpressionList(scope, switchCase.ExpressionList(), isGo)
+	w.WalkExpressionList(scope, switchCase.ExpressionList(), isGo)
 }
 
-func WalkTypeCaseClause(scope *Scope, exprCaseClause *ast.TypeCaseClause, isGo bool) {
+func (w *Walker) WalkTypeCaseClause(scope *Scope, exprCaseClause *ast.TypeCaseClause, isGo bool) {
 	if exprCaseClause == nil {
 		return
 	}
 	scope = scope.NewChildScope(false)
-	WalkTypeSwitchCase(scope, exprCaseClause.TypeSwitchCase(), isGo)
-	WalkStatementList(scope, exprCaseClause.StatementList(), isGo)
+	w.WalkTypeSwitchCase(scope, exprCaseClause.TypeSwitchCase(), isGo)
+	w.WalkStatementList(scope, exprCaseClause.StatementList(), isGo)
 }
 
-func WalkTypeSwitchCase(scope *Scope, switchCase *ast.TypeSwitchCase, isGo bool) {
+func (w *Walker) WalkTypeSwitchCase(scope *Scope, switchCase *ast.TypeSwitchCase, isGo bool) {
 	if switchCase == nil {
 		return
 	}
-	WalkTypeList(scope, switchCase.TypeList(), isGo)
+	w.WalkTypeList(scope, switchCase.TypeList(), isGo)
 }
 
-func WalkTypeList(scope *Scope, typeList *ast.TypeList, isGo bool) {
+func (w *Walker) WalkTypeList(scope *Scope, typeList *ast.TypeList, isGo bool) {
 	if typeList == nil {
 		return
 	}
 	for _, type_ := range typeList.Types() {
-		WalkType_(scope, type_, isGo)
+		w.WalkType_(scope, type_, isGo)
 	}
 }
 
-func WalkType_(scope *Scope, type_ *ast.Type_, isGo bool) {
+func (w *Walker) WalkType_(scope *Scope, type_ *ast.Type_, isGo bool) {
 	if type_ == nil {
 		return
 	}
 	// TODO 好像并不需要，走走再看
 }
 
-func WalkTypeName(scope *Scope, name *ast.TypeName, isGo bool) {
+func (w *Walker) WalkTypeName(scope *Scope, name *ast.TypeName, isGo bool) {
 
 }
 
-func WalkTypeSwitchGuard(scope *Scope, typeSwitchGuard *ast.TypeSwitchGuard, isGo bool) {
+func (w *Walker) WalkTypeSwitchGuard(scope *Scope, typeSwitchGuard *ast.TypeSwitchGuard, isGo bool) {
 	if typeSwitchGuard == nil {
 		return
 	}
-	WalkPrimaryExpr(scope, typeSwitchGuard.PrimaryExpr(), isGo)
+	w.WalkPrimaryExpr(scope, typeSwitchGuard.PrimaryExpr(), isGo)
 }
 
-func WalkPrimaryExpr(scope *Scope, expr *ast.PrimaryExpr, isGo bool) {
+func (w *Walker) WalkPrimaryExpr(scope *Scope, expr *ast.PrimaryExpr, isGo bool) {
 	if expr == nil {
 		return
 	}
-	WalkOperand(scope, expr.Operand(), isGo)
-	WalkConversion(scope, expr.Conversion(), isGo)
-	WalkMethodExpr(scope, expr.MethodExpr(), isGo)
-	WalkPrimaryExpr(scope, expr.PrimaryExpr(), isGo)
-	WalkIndex(scope, expr.Index(), isGo)
-	WalkSlice(scope, expr.Slice(), isGo)
-	WalkTypeAssertion(scope, expr.TypeAssertion(), isGo)
-	WalkArguments(scope, expr.Arguments(), isGo)
+	w.WalkOperand(scope, expr.Operand(), isGo)
+	w.WalkConversion(scope, expr.Conversion(), isGo)
+	w.WalkMethodExpr(scope, expr.MethodExpr(), isGo)
+	w.WalkPrimaryExpr(scope, expr.PrimaryExpr(), isGo)
+	w.WalkIndex(scope, expr.Index(), isGo)
+	w.WalkSlice(scope, expr.Slice(), isGo)
+	w.WalkTypeAssertion(scope, expr.TypeAssertion(), isGo)
+	w.WalkArguments(scope, expr.Arguments(), isGo)
 }
 
-var o struct{}
-var goset = map[*ast.Operand]struct{}{}
-
-func WalkOperand(scope *Scope, stmt *ast.Operand, isGo bool) {
+func (w *Walker) WalkOperand(scope *Scope, stmt *ast.Operand, isGo bool) {
 	if stmt == nil {
 		return
 	}
-	WalkLiteral(scope, stmt.Literal(), isGo)
+	w.WalkLiteral(scope, stmt.Literal(), isGo)
 
 	if isGo {
-		_, exist := goset[stmt]
+		_, exist := w.goset[stmt]
 		if exist {
 			return
 		} else {
-			goset[stmt] = o
+			w.goset[stmt] = o
 		}
 
 		name := stmt.OperandName()
@@ -372,152 +379,152 @@ func WalkOperand(scope *Scope, stmt *ast.Operand, isGo bool) {
 			if n.tree != nil {
 				switch node := n.tree.(type) {
 				case *ast.ExpressionList:
-					WalkExpressionList(scope, node, isGo)
+					w.WalkExpressionList(scope, node, isGo)
 				case *ast.Expression:
-					WalkExpression(scope, node, isGo)
+					w.WalkExpression(scope, node, isGo)
 				case *ast.FunctionDecl:
-					WalkFunctionDecl(scope, node, isGo)
+					w.WalkFunctionDecl(scope, node, isGo)
 				}
 			}
 		}
 	}
-	WalkExpression(scope, stmt.Expression(), isGo)
+	w.WalkExpression(scope, stmt.Expression(), isGo)
 }
 
-func WalkLiteral(scope *Scope, stmt ast.Literal, isGo bool) {
+func (w *Walker) WalkLiteral(scope *Scope, stmt ast.Literal, isGo bool) {
 	if stmt == nil {
 		return
 	}
 	switch tree := stmt.(type) {
 	case *ast.BasicLit:
-		WalkBasicLit(scope, tree, isGo)
+		w.WalkBasicLit(scope, tree, isGo)
 	case *ast.CompositeLit:
-		WalkCompositeLit(scope, tree, isGo)
+		w.WalkCompositeLit(scope, tree, isGo)
 	case *ast.FunctionLit:
-		WalkFunctionLit(scope, tree, isGo)
+		w.WalkFunctionLit(scope, tree, isGo)
 	}
 }
 
-func WalkBasicLit(scope *Scope, stmt *ast.BasicLit, isGo bool) {
+func (w *Walker) WalkBasicLit(scope *Scope, stmt *ast.BasicLit, isGo bool) {
 	// 看起来不用搞这个函数
 }
 
-func WalkFunctionLit(scope *Scope, stmt *ast.FunctionLit, isGo bool) {
+func (w *Walker) WalkFunctionLit(scope *Scope, stmt *ast.FunctionLit, isGo bool) {
 	if stmt == nil {
 		return
 	}
 	scope = scope.NewChildScope(false)
-	WalkSignature(scope, stmt.Signature(), isGo)
-	WalkBlock(scope, stmt.Block(), false, isGo)
+	w.WalkSignature(scope, stmt.Signature(), isGo)
+	w.WalkBlock(scope, stmt.Block(), false, isGo)
 }
 
-func WalkCompositeLit(scope *Scope, stmt *ast.CompositeLit, isGo bool) {
+func (w *Walker) WalkCompositeLit(scope *Scope, stmt *ast.CompositeLit, isGo bool) {
 	if stmt == nil {
 		return
 	}
-	WalkLiteralType(scope, stmt.LiteralType(), isGo)
-	WalkLiteralValue(scope, stmt.LiteralValue(), isGo)
+	w.WalkLiteralType(scope, stmt.LiteralType(), isGo)
+	w.WalkLiteralValue(scope, stmt.LiteralValue(), isGo)
 }
 
-func WalkLiteralType(scope *Scope, stmt *ast.LiteralType, isGo bool) {
+func (w *Walker) WalkLiteralType(scope *Scope, stmt *ast.LiteralType, isGo bool) {
 	// 看起来不用搞这个函数
 }
 
-func WalkLiteralValue(scope *Scope, stmt *ast.LiteralValue, isGo bool) {
+func (w *Walker) WalkLiteralValue(scope *Scope, stmt *ast.LiteralValue, isGo bool) {
 	if stmt == nil {
 		return
 	}
-	WalkElementList(scope, stmt.ElementList(), isGo)
+	w.WalkElementList(scope, stmt.ElementList(), isGo)
 }
 
-func WalkElementList(scope *Scope, stmt *ast.ElementList, isGo bool) {
+func (w *Walker) WalkElementList(scope *Scope, stmt *ast.ElementList, isGo bool) {
 	if stmt == nil {
 		return
 	}
 	for _, element := range stmt.KeyedElements() {
-		WalkKeyedElement(scope, element, isGo)
+		w.WalkKeyedElement(scope, element, isGo)
 	}
 }
 
-func WalkKeyedElement(scope *Scope, stmt *ast.KeyedElement, isGo bool) {
+func (w *Walker) WalkKeyedElement(scope *Scope, stmt *ast.KeyedElement, isGo bool) {
 	if stmt == nil {
 		return
 	}
 	if stmt.Key() != nil && !reflect.ValueOf(stmt.Key()).IsNil() {
 		switch key := stmt.Key().(type) {
 		case *ast.Expression:
-			WalkExpression(scope, key, isGo)
+			w.WalkExpression(scope, key, isGo)
 		case *ast.LiteralValue:
-			WalkLiteralValue(scope, key, isGo)
+			w.WalkLiteralValue(scope, key, isGo)
 		default:
 			panic("impossible")
 		}
 	}
 	switch element := stmt.Element().(type) {
 	case *ast.Expression:
-		WalkExpression(scope, element, isGo)
+		w.WalkExpression(scope, element, isGo)
 	case *ast.LiteralValue:
-		WalkLiteralValue(scope, element, isGo)
+		w.WalkLiteralValue(scope, element, isGo)
 	}
 }
 
-func WalkConversion(scope *Scope, stmt *ast.Conversion, isGo bool) {
+func (w *Walker) WalkConversion(scope *Scope, stmt *ast.Conversion, isGo bool) {
 	if stmt == nil {
 		return
 	}
-	WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
-	WalkExpression(scope, stmt.Expression(), isGo)
+	w.WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
+	w.WalkExpression(scope, stmt.Expression(), isGo)
 }
 
-func WalkNonNamedType(scope *Scope, stmt *ast.NonNamedType, isGo bool) {
+func (w *Walker) WalkNonNamedType(scope *Scope, stmt *ast.NonNamedType, isGo bool) {
 	if stmt == nil {
 		return
 	}
-	WalkTypeLit(scope, stmt.TypeLit(), isGo)
-	WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
+	w.WalkTypeLit(scope, stmt.TypeLit(), isGo)
+	w.WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
 }
 
-func WalkTypeLit(scope *Scope, stmt ast.TypeLit, isGo bool) {
+func (w *Walker) WalkTypeLit(scope *Scope, stmt ast.TypeLit, isGo bool) {
 	// todo
 }
 
-func WalkMethodExpr(scope *Scope, stmt *ast.MethodExpr, isGo bool) {
+func (w *Walker) WalkMethodExpr(scope *Scope, stmt *ast.MethodExpr, isGo bool) {
 
 }
 
-func WalkIndex(scope *Scope, stmt *ast.Index, isGo bool) {
+func (w *Walker) WalkIndex(scope *Scope, stmt *ast.Index, isGo bool) {
 
 }
 
-func WalkSlice(scope *Scope, stmt *ast.Slice, isGo bool) {
+func (w *Walker) WalkSlice(scope *Scope, stmt *ast.Slice, isGo bool) {
 
 }
 
-func WalkTypeAssertion(scope *Scope, stmt *ast.TypeAssertion, isGo bool) {
+func (w *Walker) WalkTypeAssertion(scope *Scope, stmt *ast.TypeAssertion, isGo bool) {
 
 }
 
-func WalkArguments(scope *Scope, stmt *ast.Arguments, isGo bool) {
+func (w *Walker) WalkArguments(scope *Scope, stmt *ast.Arguments, isGo bool) {
 	if stmt == nil {
 		return
 	}
-	WalkExpressionList(scope, stmt.ExpressionList(), isGo)
-	WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
+	w.WalkExpressionList(scope, stmt.ExpressionList(), isGo)
+	w.WalkNonNamedType(scope, stmt.NonNamedType(), isGo)
 }
 
-func WalkIfStmt(scope *Scope, stmt *ast.IfStmt, isGo bool) {
+func (w *Walker) WalkIfStmt(scope *Scope, stmt *ast.IfStmt, isGo bool) {
 	if stmt == nil {
 		return
 	}
 	newScope := scope.NewChildScope(false)
-	WalkStatement(newScope, stmt.SimpleStmt(), isGo)
-	WalkExpression(newScope, stmt.Expression(), isGo)
-	WalkBlock(newScope, stmt.Block(), true, isGo)
-	WalkIfStmt(newScope, stmt.Elseif(), isGo)
-	WalkBlock(newScope, stmt.Elseblock(), true, isGo)
+	w.WalkStatement(newScope, stmt.SimpleStmt(), isGo)
+	w.WalkExpression(newScope, stmt.Expression(), isGo)
+	w.WalkBlock(newScope, stmt.Block(), true, isGo)
+	w.WalkIfStmt(newScope, stmt.Elseif(), isGo)
+	w.WalkBlock(newScope, stmt.Elseblock(), true, isGo)
 }
 
-func WalkShortValDecl(scope *Scope, shortValDecl *ast.ShortValDecl, isGo bool) {
+func (w *Walker) WalkShortValDecl(scope *Scope, shortValDecl *ast.ShortValDecl, isGo bool) {
 	if shortValDecl == nil {
 		return
 	}
@@ -528,25 +535,25 @@ func WalkShortValDecl(scope *Scope, shortValDecl *ast.ShortValDecl, isGo bool) {
 			typeLiteral := tree.String()
 			scope.AddName(name, NewName(name, tree, type_, typeLiteral))
 
-			WalkExpression(scope, tree, isGo)
+			w.WalkExpression(scope, tree, isGo)
 		}
 	}
 }
 
-func WalkExpressionList(scope *Scope, expressionList *ast.ExpressionList, isGo bool) {
+func (w *Walker) WalkExpressionList(scope *Scope, expressionList *ast.ExpressionList, isGo bool) {
 	if expressionList == nil {
 		return
 	}
 	for _, expression := range expressionList.Expressions() {
-		WalkExpression(scope, expression, isGo)
+		w.WalkExpression(scope, expression, isGo)
 	}
 }
 
-func WalkExpression(scope *Scope, expression *ast.Expression, isGo bool) {
+func (w *Walker) WalkExpression(scope *Scope, expression *ast.Expression, isGo bool) {
 	if expression == nil {
 		return
 	}
-	WalkPrimaryExpr(scope, expression.PrimaryExpr(), isGo)
-	WalkExpression(scope, expression.Expression(), isGo)
-	WalkExpression(scope, expression.Expression2(), isGo)
+	w.WalkPrimaryExpr(scope, expression.PrimaryExpr(), isGo)
+	w.WalkExpression(scope, expression.Expression(), isGo)
+	w.WalkExpression(scope, expression.Expression2(), isGo)
 }

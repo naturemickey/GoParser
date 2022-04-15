@@ -3,8 +3,11 @@ package main
 import (
 	"GoParser/test/semantic"
 	"GoParser/test/utils"
+	"fmt"
 	"strings"
+	"sync"
 	"sync/atomic"
+	"time"
 )
 
 func main() {
@@ -14,16 +17,19 @@ func main() {
 	//		time.Sleep(2 * time.Second)
 	//	}
 	//}()
-	utils.WalkDir("/Users/mickey/git/mis-backend/", walk_mss_be_go_file)
+	start := time.Now()
+	utils.WalkDir("/Users/mickey/git/mis-backend/", walk_mss_be_go_file, "/Users/mickey/git/mis-backend/vendor/")
+	wg.Done()
+
+	fmt.Printf("\n\n总耗时：%.3f seconds\n", time.Since(start).Seconds())
 }
 
 var goroutineCounter int32 = 0
+var wg = sync.WaitGroup{}
 
 func walk_mss_be_go_file(filePath string) {
-	if strings.HasPrefix(filePath, "/Users/mickey/git/mis-backend/vendor") {
-		return
-	}
 	atomic.AddInt32(&goroutineCounter, 1)
+	wg.Add(1)
 	f := func() {
 		if strings.HasSuffix(filePath, ".go") {
 			////println("=======================================================================================")
@@ -33,12 +39,13 @@ func walk_mss_be_go_file(filePath string) {
 			//println("=======================================================================================")
 		}
 		atomic.AddInt32(&goroutineCounter, -1)
+		wg.Done()
 	}
-	//if goroutineCounter < 50 {
-	//	go f()
-	//} else {
-	f()
-	//}
+	if goroutineCounter < 20 {
+		go f()
+	} else {
+		f()
+	}
 }
 
 //func traceMemStats() {
