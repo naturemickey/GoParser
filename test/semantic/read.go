@@ -3,6 +3,7 @@ package semantic
 import (
 	"GoParser/parser/ast"
 	"reflect"
+	"strings"
 )
 
 var o struct{}
@@ -18,6 +19,19 @@ func (w *Walker) WalkSourceFile(tree *ast.SourceFile) {
 		w.goset = map[*ast.Operand]struct{}{}
 	}
 	scope := NewScopeRoot()
+	for _, importDecl := range tree.ImportDecls() {
+		for _, importSpec := range importDecl.ImportSpecs() {
+			name := importSpec.Alias()
+			if name != "" {
+				tree := importSpec
+				type_ := PACKAGE
+				typeLiteral := importSpec.ImportPath().String()
+				if typeLiteral == "\"context\"" {
+					scope.AddName(name, NewName(name, tree, type_, typeLiteral))
+				}
+			}
+		}
+	}
 	for _, fmd := range tree.FunctionOrMethodOrDeclarations() {
 		switch child := fmd.(type) {
 		case *ast.TypeDecl:
@@ -59,7 +73,7 @@ func (w *Walker) WalkTypeDecl(scope *Scope, typeDecl *ast.TypeDecl, isGo bool) {
 		name := typeSpec.Id()
 		tree := typeSpec
 		type_ := TYPE
-		typeLiteral := typeSpec.String()
+		typeLiteral := typeSpec.Type_().String()
 		scope.AddName(name, NewName(name, tree, type_, typeLiteral))
 	}
 }
@@ -373,17 +387,31 @@ func (w *Walker) WalkOperand(scope *Scope, stmt *ast.Operand, isGo bool) {
 		name := stmt.OperandName()
 		n, goLevel := scope.GetNameByName(name)
 		if n != nil {
-			if n.TypeLiteral() == "context.Context" && goLevel != scope.goLevel {
-				panic("在协程里用了外部的context.Context")
+			if goLevel != scope.goLevel {
+				if n.TypeLiteral() == "context.Context" {
+					panic("在协程里用了外部的context.Context")
+				} else if n.TypeLiteral() == "Context" {
+					contexAlias, _ := scope.GetNameByName(".")
+					if contexAlias != nil && contexAlias.type_ == PACKAGE && contexAlias.typeLiteral == "\"context\"" {
+						panic("在协程里用了外部的context.Context")
+					}
+				} else {
+					pkgn, _ := scope.GetNameByName(n.TypeLiteral())
+					if pkgn != nil && pkgn.typeLiteral == "context.Context" {
+						panic("在协程里用了外部的context.Context")
+					}
+				}
 			}
 			if n.tree != nil {
-				switch node := n.tree.(type) {
-				case *ast.ExpressionList:
-					w.WalkExpressionList(scope, node, isGo)
-				case *ast.Expression:
-					w.WalkExpression(scope, node, isGo)
-				case *ast.FunctionDecl:
-					w.WalkFunctionDecl(scope, node, isGo)
+				if goLevel == scope.goLevel || n.type_ != VARIABLE || strings.HasPrefix(n.typeLiteral, "func(") {
+					switch node := n.tree.(type) {
+					case *ast.ExpressionList:
+						w.WalkExpressionList(scope, node, isGo)
+					case *ast.Expression:
+						w.WalkExpression(scope, node, isGo)
+					case *ast.FunctionDecl:
+						w.WalkFunctionDecl(scope, node, isGo)
+					}
 				}
 			}
 		}

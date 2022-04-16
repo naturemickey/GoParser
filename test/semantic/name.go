@@ -36,4 +36,5 @@ const (
 	METHOD
 	VARIABLE
 	TYPE
+	PACKAGE
 )
