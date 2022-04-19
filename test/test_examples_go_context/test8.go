@@ -9,9 +9,9 @@ type Ctx struct {
 func test8(ctx context.Context, abc string) string {
 	var ctx1 = &Ctx{ctx}
 
-	fff := func(ctx2 *Ctx) {
-		println("abcd")
+	fff := func() {
+		ctx1.c.Value("ctxval")
 	}
-	go fff(ctx1)
+	go fff()
 	return "xxxx"
 }

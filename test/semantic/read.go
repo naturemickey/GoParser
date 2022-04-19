@@ -533,6 +533,14 @@ func (w *Walker) WalkTypeAssertion(scope *Scope, stmt *ast.TypeAssertion, isGo b
 }
 
 func (w *Walker) WalkArguments(scope *Scope, stmt *ast.Arguments, isGo bool) {
+	if scope.parent != nil {
+		goLevel := scope.goLevel
+		parentGoLevel := scope.parent.goLevel
+		if goLevel != parentGoLevel {
+			return
+		}
+	}
+
 	if stmt == nil {
 		return
 	}

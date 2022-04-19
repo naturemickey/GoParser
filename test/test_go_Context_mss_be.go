@@ -41,7 +41,7 @@ func walk_mss_be_go_file(filePath string) {
 		atomic.AddInt32(&goroutineCounter, -1)
 		wg.Done()
 	}
-	if goroutineCounter < 20 {
+	if goroutineCounter < 16 {
 		go f()
 	} else {
 		f()
