@@ -19,7 +19,7 @@ func main() {
 	//}()
 	start := time.Now()
 	utils.WalkDir("/Users/mickey/git/mis-backend/", walk_mss_be_go_file, "/Users/mickey/git/mis-backend/vendor/")
-	wg.Done()
+	wg.Wait()
 
 	fmt.Printf("\n\n总耗时：%.3f seconds\n", time.Since(start).Seconds())
 }
