@@ -1,7 +1,8 @@
-// Code generated from /Users/mickey/git/GoParser/parser/antlr4/GoParser.g4 by ANTLR 4.9.2. DO NOT EDIT.
+// Code generated from /Users/mickey/git/GoParser/parser/antlr4/GoParser.g4 by ANTLR 4.9.3. DO NOT EDIT.
 
 package antlr4 // GoParser
 import "github.com/antlr/antlr4/runtime/Go/antlr"
+
 // A complete Visitor for a parse tree produced by GoParser.
 type GoParserVisitor interface {
 	antlr.ParseTreeVisitor
@@ -302,5 +303,4 @@ type GoParserVisitor interface {
 
 	// Visit a parse tree produced by GoParser#eos.
 	VisitEos(ctx *EosContext) interface{}
-
 }

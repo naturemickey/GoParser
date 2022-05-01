@@ -170,6 +170,8 @@ BIG_U_VALUE: '\\' 'U' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGI
 RAW_STRING_LIT         : '`' ~'`'*                      '`' -> mode(NLSEMI);
 INTERPRETED_STRING_LIT : '"' (~["\\] | ESCAPED_VALUE)*  '"' -> mode(NLSEMI);
 
+
+
 // Hidden tokens
 
 WS                     : [ \t]+             -> channel(HIDDEN);
@@ -508,13 +510,11 @@ fragment UNICODE_LETTER
 
 mode NLSEMI;
 
-ANNOTATION : '/*@' [a-zA-Z0-9(),=]+ '*/' ;
-
 // Treat whitespace as normal
 WS_NLSEMI                     : [ \t]+             -> channel(HIDDEN);
 // Ignore any comments that only span one line
-COMMENT_NLSEMI                : '/*' ~[\r\n]*? '*/'      -> channel(HIDDEN);
-LINE_COMMENT_NLSEMI : '//' ~[\r\n]*      -> channel(HIDDEN);
+COMMENT_NLSEMI                : '/*' ~[\r\n]*? '*/'        -> channel(HIDDEN);
+LINE_COMMENT_NLSEMI           : '//' ~[\r\n]*     -> channel(HIDDEN);
 // Emit an EOS token for any newlines, semicolon, multiline comments or the EOF and 
 //return to normal lexing
 EOS:              ([\r\n]+ | ';' | '/*' .*? '*/' | EOF)            -> mode(DEFAULT_MODE);

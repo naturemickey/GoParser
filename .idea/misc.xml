@@ -5,7 +5,6 @@
       <list>
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/parser/antlr4/GoParser.g4" />
-          <option name="autoGen" value="true" />
           <option name="outputDir" value="./parser" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
@@ -15,11 +14,21 @@
         </PerGrammarGenerationSettings>
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/parser/antlr4/GoLexer.g4" />
+          <option name="outputDir" value="./parser" />
+          <option name="libDir" value="" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="antlr4" />
+          <option name="language" value="Go" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="*" />
+          <option name="autoGen" value="true" />
           <option name="outputDir" value="" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="" />
-          <option name="language" value="" />
+          <option name="language" value="Go" />
           <option name="generateVisitor" value="true" />
         </PerGrammarGenerationSettings>
       </list>

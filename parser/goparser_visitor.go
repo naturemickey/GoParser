@@ -129,9 +129,9 @@ func (visitor *GoParserVisitorImpl) VisitTypeDecl(ctx *antlr4.TypeDeclContext) i
 
 func (visitor *GoParserVisitorImpl) VisitTypeSpec(ctx *antlr4.TypeSpecContext) interface{} {
 	var annotation string
-	if ctx.ANNOTATION() != nil {
-		annotation = ctx.ANNOTATION().GetText()
-	}
+	//if ctx.ANNOTATION() != nil {
+	//	annotation = ctx.ANNOTATION().GetText()
+	//}
 	id := ctx.IDENTIFIER().GetText()
 	type_ := ctx.Type_().Accept(visitor).(*ast.Type_)
 	return ast.NewTypeSpec(annotation, id, type_)
@@ -149,9 +149,9 @@ func (visitor *GoParserVisitorImpl) VisitFunctionDecl(ctx *antlr4.FunctionDeclCo
 
 func (visitor *GoParserVisitorImpl) VisitMethodDecl(ctx *antlr4.MethodDeclContext) interface{} {
 	var annotation string
-	if ctx.ANNOTATION() != nil {
-		annotation = ctx.ANNOTATION().GetText()
-	}
+	//if ctx.ANNOTATION() != nil {
+	//	annotation = ctx.ANNOTATION().GetText()
+	//}
 	var receiver ast.Receiver = ctx.Receiver().Accept(visitor).(ast.Receiver)
 	var funName string = ctx.IDENTIFIER().GetText()
 	var signature *ast.Signature = ctx.Signature().Accept(visitor).(*ast.Signature)
@@ -988,9 +988,9 @@ func (visitor *GoParserVisitorImpl) VisitStructType(ctx *antlr4.StructTypeContex
 
 func (visitor *GoParserVisitorImpl) VisitFieldDecl(ctx *antlr4.FieldDeclContext) interface{} {
 	var annotation string
-	if ctx.ANNOTATION() != nil {
-		annotation = ctx.ANNOTATION().GetText()
-	}
+	//if ctx.ANNOTATION() != nil {
+	//	annotation = ctx.ANNOTATION().GetText()
+	//}
 	var identifierList *ast.IdentifierList
 	var type_ *ast.Type_
 	var embeddedField *ast.EmbeddedField
@@ -1077,6 +1077,7 @@ func (visitor *GoParserVisitorImpl) VisitReceiverType(ctx *antlr4.ReceiverTypeCo
 }
 
 func (visitor *GoParserVisitorImpl) VisitEos(ctx *antlr4.EosContext) interface{} {
+	println("++++++++", ctx.GetText())
 	return ast.NewEos(ctx.GetText())
 }
 

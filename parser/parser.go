@@ -22,6 +22,7 @@ func ParseGoCode(code string) ast.INode {
 	input := antlr.NewInputStream(code)
 	lexer := antlr4.NewGoLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
+
 	p := antlr4.NewGoParser(stream)
 	p.SetErrorHandler(antlr.NewBailErrorStrategy())
 	// p.SetErrorHandler(antlr.NewDefaultErrorStrategy())

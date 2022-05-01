@@ -59,13 +59,13 @@ expressionList: expression (COMMA expression)*;
 
 typeDecl: TYPE (typeSpec | L_PAREN (typeSpec eos)* R_PAREN);
 
-typeSpec: ANNOTATION? IDENTIFIER ASSIGN? type_;
+typeSpec: IDENTIFIER ASSIGN? type_;
 
 // Function declarations
 
 functionDecl: FUNC IDENTIFIER (signature block?);
 
-methodDecl: FUNC ANNOTATION? receiver IDENTIFIER ( signature block?);
+methodDecl: FUNC receiver IDENTIFIER ( signature block?);
 
 receiver: parameters;
 
@@ -340,7 +340,7 @@ element: expression | literalValue;
 
 structType: STRUCT L_CURLY (fieldDecl eos)* R_CURLY;
 
-fieldDecl: ANNOTATION? (
+fieldDecl: (
 		identifierList type_
 		| embeddedField
 	) tag = string_?;
