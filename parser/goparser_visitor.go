@@ -128,9 +128,13 @@ func (visitor *GoParserVisitorImpl) VisitTypeDecl(ctx *antlr4.TypeDeclContext) i
 }
 
 func (visitor *GoParserVisitorImpl) VisitTypeSpec(ctx *antlr4.TypeSpecContext) interface{} {
+	var annotation string
+	if ctx.ANNOTATION() != nil {
+		annotation = ctx.ANNOTATION().GetText()
+	}
 	id := ctx.IDENTIFIER().GetText()
 	type_ := ctx.Type_().Accept(visitor).(*ast.Type_)
-	return ast.NewTypeSpec(id, type_)
+	return ast.NewTypeSpec(annotation, id, type_)
 }
 
 func (visitor *GoParserVisitorImpl) VisitFunctionDecl(ctx *antlr4.FunctionDeclContext) interface{} {
@@ -144,6 +148,10 @@ func (visitor *GoParserVisitorImpl) VisitFunctionDecl(ctx *antlr4.FunctionDeclCo
 }
 
 func (visitor *GoParserVisitorImpl) VisitMethodDecl(ctx *antlr4.MethodDeclContext) interface{} {
+	var annotation string
+	if ctx.ANNOTATION() != nil {
+		annotation = ctx.ANNOTATION().GetText()
+	}
 	var receiver ast.Receiver = ctx.Receiver().Accept(visitor).(ast.Receiver)
 	var funName string = ctx.IDENTIFIER().GetText()
 	var signature *ast.Signature = ctx.Signature().Accept(visitor).(*ast.Signature)
@@ -151,7 +159,7 @@ func (visitor *GoParserVisitorImpl) VisitMethodDecl(ctx *antlr4.MethodDeclContex
 	if ctx.Block() != nil {
 		block = ctx.Block().Accept(visitor).(*ast.Block)
 	}
-	return ast.NewMethodDecl(receiver, funName, signature, block)
+	return ast.NewMethodDecl(annotation, receiver, funName, signature, block)
 }
 
 func (visitor *GoParserVisitorImpl) VisitReceiver(ctx *antlr4.ReceiverContext) interface{} {
@@ -979,6 +987,10 @@ func (visitor *GoParserVisitorImpl) VisitStructType(ctx *antlr4.StructTypeContex
 }
 
 func (visitor *GoParserVisitorImpl) VisitFieldDecl(ctx *antlr4.FieldDeclContext) interface{} {
+	var annotation string
+	if ctx.ANNOTATION() != nil {
+		annotation = ctx.ANNOTATION().GetText()
+	}
 	var identifierList *ast.IdentifierList
 	var type_ *ast.Type_
 	var embeddedField *ast.EmbeddedField
@@ -996,7 +1008,7 @@ func (visitor *GoParserVisitorImpl) VisitFieldDecl(ctx *antlr4.FieldDeclContext)
 	if ctx.GetTag() != nil {
 		tag = ctx.GetTag().GetText()
 	}
-	return ast.NewFieldDecl(identifierList, type_, embeddedField, tag)
+	return ast.NewFieldDecl(annotation, identifierList, type_, embeddedField, tag)
 }
 
 func (visitor *GoParserVisitorImpl) VisitString_(ctx *antlr4.String_Context) interface{} {

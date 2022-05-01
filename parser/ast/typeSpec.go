@@ -2,12 +2,21 @@ package ast
 
 type TypeSpec struct {
 	BaseNode
-	id    string
-	type_ *Type_
+	annotation string
+	id         string
+	type_      *Type_
 }
 
-func NewTypeSpec(id string, type_ *Type_) *TypeSpec {
+func NewTypeSpec(annotation string, id string, type_ *Type_) *TypeSpec {
 	return &TypeSpec{id: id, type_: type_}
+}
+
+func (s *TypeSpec) Annotation() string {
+	return s.annotation
+}
+
+func (s *TypeSpec) SetAnnotation(annotation string) {
+	s.annotation = annotation
 }
 
 func (s *TypeSpec) Id() string {

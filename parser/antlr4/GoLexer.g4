@@ -508,6 +508,7 @@ fragment UNICODE_LETTER
 
 mode NLSEMI;
 
+ANNOTATION : '/*@' [a-zA-Z0-9(),=]+ '*/' ;
 
 // Treat whitespace as normal
 WS_NLSEMI                     : [ \t]+             -> channel(HIDDEN);

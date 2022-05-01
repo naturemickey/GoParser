@@ -2,14 +2,23 @@ package ast
 
 type MethodDecl struct {
 	BaseNode
-	receiver  Receiver
-	funName   string
-	signature *Signature
-	block     *Block
+	annotation string
+	receiver   Receiver
+	funName    string
+	signature  *Signature
+	block      *Block
 }
 
-func NewMethodDecl(receiver Receiver, funName string, signature *Signature, block *Block) *MethodDecl {
+func NewMethodDecl(annotation string, receiver Receiver, funName string, signature *Signature, block *Block) *MethodDecl {
 	return &MethodDecl{receiver: receiver, funName: funName, signature: signature, block: block}
+}
+
+func (s *MethodDecl) Annotation() string {
+	return s.annotation
+}
+
+func (s *MethodDecl) SetAnnotation(annotation string) {
+	s.annotation = annotation
 }
 
 func (s *MethodDecl) Receiver() Receiver {

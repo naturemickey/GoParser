@@ -3,6 +3,8 @@ package ast
 type FieldDecl struct {
 	BaseNode
 
+	annotation string
+
 	identifierList *IdentifierList
 	type_          *Type_
 	embeddedField  *EmbeddedField
@@ -10,8 +12,16 @@ type FieldDecl struct {
 	tag string
 }
 
-func NewFieldDecl(identifierList *IdentifierList, type_ *Type_, embeddedField *EmbeddedField, tag string) *FieldDecl {
+func NewFieldDecl(annotation string, identifierList *IdentifierList, type_ *Type_, embeddedField *EmbeddedField, tag string) *FieldDecl {
 	return &FieldDecl{identifierList: identifierList, type_: type_, embeddedField: embeddedField, tag: tag}
+}
+
+func (s *FieldDecl) Annotation() string {
+	return s.annotation
+}
+
+func (s *FieldDecl) SetAnnotation(annotation string) {
+	s.annotation = annotation
 }
 
 func (s *FieldDecl) IdentifierList() *IdentifierList {
