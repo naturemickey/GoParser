@@ -1,6 +1,6 @@
 package main
 
-import "GoParser/test/semantic"
+import "github.com/naturemickey/GoParser/test/semantic"
 
 func main() {
 	semantic.WaklTest("./test/test_examples_go_context/test1.go")

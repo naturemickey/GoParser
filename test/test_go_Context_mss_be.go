@@ -1,9 +1,9 @@
 package main
 
 import (
-	"GoParser/test/semantic"
-	"GoParser/test/utils"
 	"fmt"
+	"github.com/naturemickey/GoParser/test/semantic"
+	"github.com/naturemickey/GoParser/test/utils"
 	"strings"
 	"sync"
 	"sync/atomic"

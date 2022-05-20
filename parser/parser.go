@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"GoParser/parser/antlr4"
-	"GoParser/parser/ast"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/naturemickey/GoParser/parser/antlr4"
+	"github.com/naturemickey/GoParser/parser/ast"
 	"io/ioutil"
 )
 

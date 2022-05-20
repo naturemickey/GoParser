@@ -1,21 +1,24 @@
 package main
 
 import (
-	"GoParser/parser"
-	"GoParser/parser/antlr4"
-	"GoParser/parser/ast"
-	"GoParser/test/utils"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/naturemickey/GoParser/parser"
+	"github.com/naturemickey/GoParser/parser/antlr4"
+	"github.com/naturemickey/GoParser/parser/ast"
+	"github.com/naturemickey/GoParser/test/utils"
 	"io/ioutil"
 	"strings"
+	"time"
 )
 
 func main() {
-	utils.WalkDir("/Users/mickey/git/mis-backend/", parse_go_file)
+	start := time.Now()
+	utils.WalkDir("/Users/mickey/git/mis-backend/", parse_go_file, "/Users/mickey/git/mis-backend/vendor/")
+	println(time.Since(start).Seconds())
 }
 
 func parse_go_file(filePath string) {
-	if strings.HasSuffix(filePath, ".go") {
+	if strings.HasSuffix(filePath, ".go") && !strings.HasSuffix(filePath, ".pb.go") {
 		//println("=======================================================================================")
 		println("开始处理文件：", filePath)
 
@@ -41,6 +44,7 @@ func parse_go_file(filePath string) {
 
 		accept := tree.Accept(visitor).(ast.INode)
 
+		//_ = accept.String()
 		content := accept.String()
 
 		//println("------------------------")
